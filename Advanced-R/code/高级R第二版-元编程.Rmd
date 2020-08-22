@@ -1,0 +1,141 @@
+--- 
+title: "高级R第二版-技术"
+# subtitle: "Lecture title"
+author:
+- affiliation: Dongbei University of Finance & Economics
+  name: Studennt. LI Junjie
+date: '`r Sys.Date()`'
+output:
+  rmdformats::material:
+    df_print: paged	
+    number_sections: true
+    theme: paper
+    highlight: kate
+    use_bookdown: true
+    # css: styles.css
+# bibliography: [book.bib, packages.bib]
+# biblio-style: apalike
+link-citations: yes
+sansfont: Times New Roman
+always_allow_html: yes
+urlcolor: "red"
+description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+editor_options: 
+  chunk_output_type: console
+---
+
+---
+
+# 加载经常用的R包{-}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.show = "hold",
+                      fig.align = "center",
+                      tidy = FALSE)
+```
+
+```{js, echo=FALSE}
+$('.title').css('color', 'red')
+$('.title').css('font-family', 'Times New Roman')
+```
+
+```{css, echo=FALSE}
+* {
+    # font-size: 17px !important;
+    font-family: "Times New Roman" !important;
+    # color: rgb(199 237	204)
+}
+::selection {
+   # background: rgb(135 206 255);
+}
+```
+
+```{r,warning=FALSE,message=FALSE}
+library(pacman)
+# 读数据
+p_load(readxl,writexl,data.table,openxlsx,haven,rvest)
+```
+
+```{r,warning=FALSE,message=FALSE}
+# 数据探索
+p_load(tidyverse,DT,skimr,DataExplorer,explore,vtable,stringr,kableExtra,lubridate)
+```
+
+```{r,eval=FALSE,warning=FALSE,message=FALSE}
+# 模型
+p_load(grf,glmnet,caret,tidytext,fpp2,forecast,car,tseries,hdm,tidymodels,broom)
+```
+
+```{r,eval=FALSE,warning=FALSE,message=FALSE}
+# 可视化
+p_load(patchwork,ggrepel,ggcorrplot,gghighlight,ggthemes,shiny)
+```
+
+```{r,eval=TRUE,warning=FALSE,message=FALSE}
+# 其它常用包
+p_load(magrittr,listviewer,devtools,here,janitor,reticulate,jsonlite)
+```
+
+---
+
+# 介绍
+
+关于R的最有趣的事情之一是它的**元编程能力**。这就是认为代码是可以通过程序检查和修改的数据。这是一个有力的主意。深刻影响很多R代码的代码。在最基本的层次上，它允许您执行诸如编写`library（purrr）`而不是`library（“purrr”）`的操作，并启用plot（x，sin（x））来自动用x和sin（x）标记轴。在更深层次上，它允许您执行诸如使用y〜x1 + x2表示表示可从x1和x2预测y值的模型，以将subset（df，x == y）转换为df [df $ x  == df $ y，，drop=FALSE]，并且当db是远程数据库表时，使用dplyr::filter（db，is.na（x））生成SQL WHERE x IS NULL。
+
+与元编程密切相关的是非标准评估，简称NSE。该术语通常用于描述R函数的行为，它在两个方面存在问题。首先，NSE实际上是函数参数（或多个参数）的属性，因此谈论NSE函数有点草率。其次，用某种东西（不是标准的东西）来定义它会令人困惑，因此在本书中，我将介绍更精确的词汇。
+
+具体来说，这本书着重于**整洁的评估**（有时简称为整洁的评估）。在`rlang`包(Henry 和 Wickham 2018b)中实现了整洁的评估，我将在这些章节中广泛使用rlang。这样你就可以专注于那些重大的想法，而不会被r的历史中出现的奇怪的实现方式所分心。在我用rlang介绍了每个大概念之后，我将回过头来讨论这些概念是如何用基r表示的。这种方法对某些人来说可能有些落后，但它就像学习如何驾驶使用自动变速器而不是手动变速杆: 它允许你在必须学习细节之前专注于大局。*这本书关注于整洁评估的理论方面，因此你可以从头到尾充分理解它是如何工作*的。
+
+---
+
+# 简介
+
+元编程是本书中最难的主题，因为它汇集了许多以前不相关的主题，并迫使您应对以前可能从未考虑过的问题。您还需要学习很多新词汇，一开始，每个新词似乎都是由您从未听说过的其他三个词定义的。即使您是使用另一种语言的经验丰富的程序员，您的现有技能也不大可能会有所帮助，因为很少有现代流行语言能够揭示R提供的元编程水平。因此，如果您一开始感到沮丧或困惑，请不要感到惊讶；这是每个人都会经历的自然过程！
+
+但是我认为现在学习元编程比以往任何时候都容易。在过去的几年中，理论和实践已经日趋成熟，为您提供了扎实的基础以及可帮助您解决常见问题的工具。在本章中，您将了解所有主要部分的概况以及它们如何组合在一起。
+
+本章介绍使用rlang的主要思想；您将在后面的章节中学习基本的等效内容。我们还将使用lobstr包来探索代码的树形结构。
+
+```{r}
+library(rlang)
+library(lobstr)
+```
+
+## 代码就是数据
+
+## 代码是一棵树
+
+## 代码可以生成代码
+
+## 评估运行代码
+
+## 使用函数自定义评估
+
+## 使用数据定制评估
+
+## Quosures
+
+**练习**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

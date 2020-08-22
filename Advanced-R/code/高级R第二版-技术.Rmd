@@ -1,0 +1,804 @@
+--- 
+title: "高级R第二版-技术"
+# subtitle: "Lecture title"
+author:
+- affiliation: Dongbei University of Finance & Economics
+  name: Studennt. LI Junjie
+date: '`r Sys.Date()`'
+output:
+  rmdformats::material:
+    df_print: paged	
+    number_sections: true
+    theme: paper
+    highlight: kate
+    use_bookdown: true
+    # css: styles.css
+# bibliography: [book.bib, packages.bib]
+# biblio-style: apalike
+link-citations: yes
+sansfont: Times New Roman
+always_allow_html: yes
+urlcolor: "red"
+description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+editor_options: 
+  chunk_output_type: console
+---
+
+---
+
+# 加载经常用的R包{-}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.show = "hold",
+                      fig.align = "center",
+                      tidy = FALSE)
+```
+
+```{js, echo=FALSE}
+$('.title').css('color', 'red')
+$('.title').css('font-family', 'Times New Roman')
+```
+
+```{css, echo=FALSE}
+* {
+    # font-size: 17px !important;
+    font-family: "Times New Roman" !important;
+    # color: rgb(199 237	204)
+}
+::selection {
+   # background: rgb(135 206 255);
+}
+```
+
+```{r,warning=FALSE,message=FALSE}
+library(pacman)
+# 读数据
+p_load(readxl,writexl,data.table,openxlsx,haven,rvest)
+```
+
+```{r,warning=FALSE,message=FALSE}
+# 数据探索
+p_load(tidyverse,DT,skimr,DataExplorer,explore,vtable,stringr,kableExtra,lubridate)
+```
+
+```{r,eval=FALSE,warning=FALSE,message=FALSE}
+# 模型
+p_load(grf,glmnet,caret,tidytext,fpp2,forecast,car,tseries,hdm,tidymodels,broom)
+```
+
+```{r,eval=FALSE,warning=FALSE,message=FALSE}
+# 可视化
+p_load(patchwork,ggrepel,ggcorrplot,gghighlight,ggthemes,shiny)
+```
+
+```{r,eval=TRUE,warning=FALSE,message=FALSE}
+# 其它常用包
+p_load(magrittr,listviewer,devtools,here,janitor,reticulate,jsonlite)
+```
+
+---
+
+# 介绍{-}
+
+最后的四章涵盖了两种通用的编程技术：**查找和修复错误**以及**发现和修复性能**问题。衡量和提高性能的工具尤为重要，因为R并不是一种快速的语言。这不是偶然的：R的设计目的是使交互式**数据分析**对人类来说更容易，而不是使计算机尽可能快。尽管R与其他编程语言相比速度较慢，但在大多数情况下，它足够快。这些章节可以帮助您解决R不够快的情况，方法是提高R代码的性能，或者切换到专为性能而设计的C ++语言。
+
+---
+
+# 调试
+
+## 介绍
+
+R代码引发意外错误时该怎么办？ 您需要什么工具来查找和解决问题？ 本章将向您介绍调试的技巧和科学，从一般策略开始，然后介绍特定工具。
+
+我将展示`R`和`RStudio IDE`所提供的工具。我建议尽可能使用**RStudio**的工具，但我还将向您展示适用于所有地方的等效工具。您可能还需要参考官方**RStudio调试文档**，该文档始终反映RStudio的最新版本。
+
+注意：编写新函数时，您不需要使用这些工具。如果发现自己经常在新代码中使用它们，请重新考虑您的方法。与其尝试一次全部编写一个大函数，不如在小块上交互地工作。如果您从小处着手，则可以快速找出无法解决问题的原因，并且不需要复杂的调试工具。
+
+## 总体方针
+
+寻找问题的根本原因总是具有挑战性的。**大多数错误都很微妙且很难发现**，因为如果它们很明显，那么您首先就应该避免它们。好的策略会有所帮助。下面，我概述了一个有用的**四步过程**：
+
+1. 谷歌！
+
+    每当您看到错误消息时，请先对其进行**谷歌搜索**。如果幸运的话，您会发现这是已知解决方案的常见错误。进行谷歌搜索时，请删除特定于问题的任何变量名称或值，以提高匹配的机会。
+
+2. 可重复
+
+    为了找出错误的根本原因，您需要考虑并拒绝假设多次执行代码。为了尽可能快地进行迭代，有必要进行一些前期投资，以使问题更容易，更快速地重现。
+    
+    首先创建一个可复制的示例（第1.7节）。接下来，通过删除代码并简化数据来使示例最小化。 这样做时，您可能会发现不会触发错误的输入。请注意它们：在诊断根本原因时它们将很有帮助。
+    
+    如果您使用的是自动化测试，那么这也是创建自动化测试用例的好时机。如果您现有的测试覆盖率很低，请趁机添加一些附近的测试，以确保保留现有的良好行为。这减少了创建新错误的机会。
+    
+3. Figure out where it is
+
+    如果幸运的话，以下部分中的一种工具将帮助您快速识别导致该错误的代码行。但是，通常情况下，您需要多考虑一些问题。采用科学方法是一个好主意。生成假设，设计实验以对其进行测试，并记录您的结果。这似乎是很多工作，但是系统的方法最终可以节省您的时间。 
+    
+    当我本来可以更好地解决一个错误时，我通常会浪费很多时间依靠自己的直觉来解决一个错误（“哦，这一定是一个错误的错误，所以我这里只减去1”）。系统的方法。
+    
+    如果失败，则可能需要寻求其他人的帮助。如果您已按照上一步进行操作，那么您将获得一个易于与他人共享的小例子。这使其他人更容易查看问题，并且更有可能帮助您找到解决方案。
+  
+4. Fix it and test it
+
+    找到该错误后，您需要**找出解决方法**，并检查该修复程序是否确实有效。同样，进行自动化测试非常有用。这不仅有助于确保您确实修复了该错误，还有助于确保在此过程中没有引入任何新的错误。在没有自动化测试的情况下，请确保仔细记录正确的输出，并检查以前失败的输入。
+
+## Locating errors
+
+使错误重复出现后，下一步就是**找出错误的根源**。此过程中最重要的工具是`traceback（）`，它向您显示导致错误的调用顺序
+
+Here’s a **simple example**: you can see that f() calls g() calls h() calls i(), which checks if its argument is numeric:
+
+```{r,error=TRUE}
+f <- function(a) g(a)
+g <- function(b) h(b)
+h <- function(c) i(c)
+i <- function(d){
+  if(!is.numeric(d)){
+    stop("'d' must be a numeric number",call. = FALSE)
+  } else {
+    d + 10
+  }
+  
+}
+i(10)
+```
+
+```{r,error=TRUE}
+i("a")
+```
+
+```{r,error=TRUE}
+f("A")
+```
+
+注意:您从底部到顶部读取`traceback()`输出:初始调用是f()，它调用g()，然后是 h() ，然后是i()，它触发错误。如果将source()d调用到r中的代码调用，回溯还将以 filename.r#linenumber的格式显示函数的位置。这些在RStudio中是可单击的，并且会将您带到编辑器中相应的代码行。
+
+## Interactive debugger
+
+如果您使用的是**RStudio**，则进入交互式调试器的最简单方法是通过RStudio的**“使用调试重新运行”**工具。这将重新运行创建错误的命令，并在发生错误的地方暂停执行。否则，您可以在要暂停的位置插入对`browser（）`的调用，然后重新运行该函数。例如，我们可以在`g（）`中插入调用`browser（）`：
+
+```{r,eval=FALSE}
+g <- function(b) {
+  browser()
+  h(b)
+}
+formals(g)
+g(10)
+```
+
+`browser（）`只是一个常规函数调用，这意味着您可以通过将其包装在if语句中有条件地运行它：
+
+```{r}
+g <- function(b) {
+  if (b < 0) {
+    browser()
+  }
+  h(b)
+}
+```
+
+在RStudio中，您将在编辑器中看到相应的代码（下面将突出显示将要运行的语句），在**“环境”窗格**中的当前环境中的对象以及在“回溯”窗格中的调用堆栈。
+
+### `browser()` commands
+
+### Alternatives
+
+## Non-interactive debugging
+
+当您无法以交互方式运行代码时，调试最具挑战性，这通常是因为它是某些管道自动运行的一部分（可能在另一台计算机上），或者当您以交互方式运行相同的代码时不会发生错误。 这可能非常令人沮丧！
+
+在RMarkdown文件中调试代码需要**一些特殊工具**。首先，如果您使用RStudio编织文件，请改为调用`rmarkdown::rende（“path/to/file.Rmd”）`。这将在当前会话中运行代码，从而使调试更加容易。如果这样做可以解决问题，则需要找出导致环境不同的原因。
+
+## Non-error failures
+
+## [本章答案](https://advanced-r-solutions.rbind.io/debugging.html)
+
+---
+
+# 测量性能
+
+## 介绍
+
+在使您的代码更快之前，您首先需要确定导致代码缓慢的原因。这听起来很简单，但事实并非如此。 即使是经验丰富的程序员也很难识别其代码中的瓶颈。因此，您应该不依赖直觉，而是对代码进行概要分析：使用实际输入来测量每行代码的运行时间。
+
+一旦确定了瓶颈，就需要仔细尝试替代方法，以找到仍然相当的更快代码。在下一章中，您将学习多种方法来加速代码，但是首先您需要学习如何进行微基准测试，以便您可以精确地衡量性能差异。
+
+```{r}
+library(pacman)
+p_load(profvis)
+p_load(bench)
+```
+
+## Profiling
+
+在各种编程语言中，用于了解代码性能的主要工具是探查器。有许多不同类型的探查器，但是R使用一种相当简单的类型，称为抽样探查器或统计探查器。抽样探查器每隔几毫秒就会停止执行代码并记录调用堆栈（即当前正在执行哪个函数以及调用该函数的函数，依此类推）。 例如，考虑下面的`f（）`：
+
+```{r}
+f <- function() {
+  pause(0.1)
+  g()
+  h()
+}
+g <- function() {
+  pause(0.1)
+  h()
+}
+h <- function() {
+  pause(0.1)
+}
+```
+
+（我使用`profvis::pause（）`而不是`Sys.sleep（）`，因为`Sys.sleep（）`不会出现在分析输出中，因为据R所知，它不会占用任何计算时间。）
+
+**惰性求值**意味着参数通常是在另一个函数中求值的，这使调用堆栈变得复杂（第7.5.2节）。不幸的是，R的探查器没有存储足够的信息来解开懒惰的求值，因此在下面的代码中，分析似乎使**j（）调用了i（）**，因为直到j（）才需要对参数进行求值。
+
+```{r}
+i <- function() {
+  pause(0.1)
+  10
+}
+j <- function(x) {
+  x + 10
+}
+j(i())
+```
+
+```{r}
+f <- function(n = 1e5) {
+  x <- rep(1, n)
+  rm(x)
+}
+f()
+```
+
+## Microbenchmarking
+
+```{r}
+p_load(bench)
+x <- runif(10000)
+bench::mark(sqrt(x),x^0.5) 
+```
+
+### `bench::mark()` results
+
+```{r}
+bench::mark(sqrt(x),x^0.5) -> lb
+lb %>% plot()
+```
+
+```{r}
+lb[c("expression", "min", "median", "itr/sec", "n_gc")]
+```
+
+### Interpreting results
+
+**练习**
+
+您可以使用内置函数`system.time（）`代替使用`bench::mark（）`。但是`system.time（）`的精度要低得多，因此，您需要使用一个循环将每个操作重复多次，然后除以找到每个操作的平均时间，如下面的代码所示。
+
+```{r}
+n <- 10000
+system.time(for (i in 1:n) sqrt(x)) / n
+system.time(for (i in 1:n) x ^ 0.5) / n
+```
+
+这是另外两种计算向量平方根的方法。您认为哪一个最快？ 哪一个最慢？ 使用微基准测试来测试您的答案。
+
+```{r}
+x <- runif(1000)
+bench::mark(x^(1/2),exp(log(x)/2)) -> lb
+lb %>% plot()
+lb[c("expression", "min", "median", "itr/sec", "n_gc")]
+```
+
+## [本章答案](https://advanced-r-solutions.rbind.io/measuring-performance.html)
+
+Q: 与使用`bench::mark ()`不同，您可以使用内置函数`system.time()`。但是 `system.time()`的精确度要低得多，因此需要使用循环多次重复每个操作，然后除以查找每个操作的平均时间，如下面的代码所示。
+
+```{r,eval=FALSE}
+n <- 100000
+system.time(for (i in 1:n) sqrt(x)) / n
+system.time(for (i in 1:n) x ^ 0.5) / n
+```
+
+```{r}
+system.time((map(1:n,~sqrt(.x)) %>% unlist()))/n
+```
+
+```{r}
+n <- 1e6
+x <- runif(100)
+
+bench_df <- bench::mark(
+  sqrt(x), 
+  x ^ 0.5,
+  iterations = n
+)
+bench_df
+```
+
+Q: Here are two other ways to compute the square root of a vector. Which do you think will be fastest? Which will be slowest? Use **microbenchmarking** to test your answers.
+
+```{r}
+x <- runif(10000)
+
+bench::mark(sqrt(x),
+            x ^ 0.5,
+            x ^ (1 / 2),
+            exp(log(x) / 2),
+            relative = TRUE) %>% 
+  select(expression,median) %>% 
+  mutate(across(expression,as.character)) %>% 
+  arrange(median)
+```
+
+如我们所料，惯用的原始函数`sqrt（）`是最快的。
+
+---
+
+# 提高性能
+
+## 介绍
+
+> 我们应该忘记小的效率，比如说97%的时间:过早的优化是一切罪恶的根源。然而，我们不应该错过这3%的关键机会。一个好的程序员不会因为这样的推理而自满，他会明智地仔细检查关键代码; 但是只有在代码被识别之后。
+
+使用性能分析确定瓶颈后，您需要使其更快。很难就提高性能提供一般性建议，但是我会尽力使用可以在许多情况下应用的**四种技术**。我还将建议一种性能优化的总体策略，以帮助确保您的更快代码仍然正确。
+
+尝试消除所有瓶颈很容易陷入困境。**别！您的时间是宝贵的**，最好花时间分析数据，而不是消除代码中可能的低效率。务实：不要花费数小时的时间来节省几秒钟的计算机时间。要实施此建议，您应该为代码设置目标时间，并仅优化达到该目标的时间。这意味着您不会消除所有瓶颈。一些您无法实现的目标，因为您已经实现了目标。其他人可能需要跳过并接受，因为没有快速简便的解决方案，或者因为代码已经很好地进行了优化并且不可能进行重大改进。接受这些可能性，然后转到下一个候选人。
+
+## 组织代码
+
+解决瓶颈时，您可能会想出多种方法。为每种方法编写一个函数，封装所有相关行为。这样可以更轻松地检查每种方法是否返回正确的结果，并确定运行时间需要多长时间。为了演示该策略，我将比较两种计算均值的方法：
+
+```{r}
+mean1 <- function(x){mean(x)}
+mean2 <- function(x){
+  sum(x)/length(x)
+}
+```
+
+我建议您保留所有尝试的记录，甚至包括失败的记录。如果将来发生类似的问题，查看尝试过的所有内容将很有用。为此，我**建议使用RMarkdown**，它可以轻松地将代码与详细的注释混合在一起。
+
+接下来，生成一个代表性的测试用例。**该案例应该足够大以抓住问题的实质，但又应足够小以至于最多只需要几秒钟。**您不希望它花费太长时间，因为您需要多次运行测试用例以比较方法。另一方面，您不希望案例太小，因为这样结果可能无法扩展到真正的问题。在这里，我将使用100,000个数字：
+
+```{r}
+x <- runif(1e5)
+```
+
+现在使用`bench::mark（）`精确比较变化。`bench::mark（）`自动检查所有调用是否返回相同的值。这并不保证该功能在所有输入上的行为都相同，因此在理想情况下，您还将进行单元测试，以确保您不会意外更改该功能的行为。
+
+```{r}
+bench::mark(mean1(x),mean2(x)) -> lb
+lb %>% plot() + mytheme
+```
+
+```{r}
+lb %>% select(expression,min,median,n_itr,n_gc)
+```
+
+（您可能会对结果感到惊讶：`mean（x）`比`sum（x）/length（x）`慢得多。这是因为，除其他原因外，`mean（x）`使向量的两次通过在数值上更加准确 ）
+
+## 检查现有的解决方法
+
+整理好代码并捕获了所有可以想到的变体之后，自然就可以看到其他人所做的事情。 *您是一个大型社区的一员*，很可能有人已经解决了相同的问题。有两个不错的起点：
+
+- `CRAN task views`. If there’s a CRAN task view related to your problem domain, it’s worth looking at the packages listed there.
+- `Reverse dependencies of Rcpp`, as listed on its CRAN page. Since these packages use C++, they’re likely to be fast.
+
+否则，挑战就是以一种可以帮助您找到相关问题和解决方案的方式描述您的瓶颈。知道问题的名称或它的同义词将使此搜索容易得多。但是，由于您不知道它叫什么，因此很难搜索！解决此问题的最佳方法是**广泛阅读**，以便您可以逐步建立自己的词汇表。或者，问其他人。与您的同事交谈，集思广益一些可能的名称，然后在**Google**和**StackOverflow**上搜索。将搜索范围限制在与R相关的页面上通常很有帮助。对于Google，请尝试rseek。对于堆栈溢出，通过在搜索中包含R标签[R]来限制搜索。
+
+记录您找到的所有解决方案，而不仅仅是立即出现的解决方案。某些解决方案最初可能会比较慢，但最终会变得更快，因为它们更易于优化。您也许还可以结合不同方法中最快的部分。 如果您找到了足够快的解决方案，那么恭喜！否则，请继续阅读。
+
+**练习**
+
+列出将字符串转换为日期时间对象的四个函数（不仅限于基数R中的函数）。他们的优缺点是什么？
+
+```{r}
+x <- c("2020-10-10","2020-11-11")
+x %>% map(class)
+x %>% as.ts()
+x %>% zoo::as.Date()
+x %>% zoo::as.Date.ts()
+x %>% ymd()
+```
+
+```{r}
+accumulate(1:10,sum)/(1:10)
+```
+
+## 做的越少越好
+
+**使函数更快的最简单方法**是使其工作量减少。一种方法是使用针对更特定类型的输入或输出或针对特定问题的功能。例如：
+
+- `rowSums()`, `colSums()`, `rowMeans()`, and `colMeans()` are faster than equivalent invocations that `use apply()` because they are vectorised.
+- `vapply（）`比`sapply（）`更快，因为它预先指定了输出类型。
+- 如果要查看向量是否包含单个值，则any（x==10）快于10％in％x，因为测试相等性比测试集合包含更简单。
+
+```{r}
+1:10 %in% 10
+any(1:10 == 10)
+10 %in% 1:10
+```
+
+一些函数将其输入强制为特定类型。如果输入的类型不正确，则该功能必须做额外的工作。 而是寻找一个可以按原样使用您的数据的功能，或者考虑更改存储数据的方式。此问题的最常见示例是在数据帧上使用`apply（）`。`apply（）`始终将其输入转换为矩阵。这种错误不仅容易发生（因为数据帧比矩阵更通用），而且速度也较慢。
+
+- `read.csv()`: specify known column types with `colClasses`. (Also consider switching to `readr::read_csv()` or `data.table::fread()` which are considerably faster than `read.csv()`.)
+- `factor()`: specify known `levels` with levels.
+- `cut()`: don’t generate labels with `labels = FALSE` if you don’t need them, or, even better, use `findInterval()` as mentioned in the “see also” section of the documentation.
+- `unlist(x, use.names = FALSE)` is much faster than unlist(x).
+- `interaction()`: if you only need combinations that exist in the data, use `drop = TRUE`.
+
+```{r}
+interaction(1:10,1,drop = FALSE)
+```
+
+下面，我探讨了如何改进此策略以提高`mean（）`和`as.data.frame（）`的性能。
+
+```{r}
+x <- runif(1e2)
+
+bench::mark(
+  mean(x),
+  mean.default(x)
+)[c("expression", "min", "median", "itr/sec", "n_gc")]
+```
+
+风险更大的优化是直接调用基础`.Internal`函数。这样比较快，因为它不进行任何输入检查或处理NA，因此您以安全为代价提高速度。
+
+```{r}
+x <- runif(1e2)
+bench::mark(
+  mean(x),
+  mean.default(x),
+  .Internal(mean(x))
+)[,c("expression", "min", "median", "itr/sec", "n_gc")]
+```
+
+**注意：**这些差异中的大多数是由于x较小而产生的。如果增加大小，差异将基本消失，因为现在大部分时间都花在计算均值上，而不是寻找底层实现。这很好地提醒您，**输入的大小很重要，您应该根据实际数据来激发优化**。
+
+## 向量化
+
+如果您使用R已有一段时间，则可能已经听到了**“对代码进行矢量化”**的建议。但这实际上意味着什么？向量化代码并不仅仅是避免循环，尽管这通常是一个步骤。向量化是关于对问题采用全对象方法，考虑向量而不是标量。**向量化函数**有两个关键属性：
+
+- 它使许多问题变得更简单。不必考虑向量的组成部分，而只需考虑整个向量。
+- 向量化函数中的循环用C而不是R编写。C中的循环要快得多，因为它们的开销要少得多。
+
+向量化对于编写快速的R代码也很重要。这并不意味着只使用`map（）`或`lapply（）`。相反，矢量化意味着找到用C实现的，最接近于您的问题的现有R函数。
+
+```{r}
+# install.packages("ggplot2movies")
+ggplot2movies::movies %>% 
+  select(
+    where( ~is.na(.x) %>% mean() > 0.3)
+    ) %>% head(20)
+```
+
+```{r}
+library(ggplot2movies)
+data <- data.frame(x = c(1:10,NA))
+data %>% is.na()
+is.na(data)
+data[is.na(data)] <- 1000
+data
+```
+
+对于矩阵
+
+```{r}
+matrix(c(1:10,NA,NA),2)->x
+is.na(x)
+x[is.na(x)] <- 0
+x
+```
+
+```{r}
+is.na(x)
+```
+
+**矩阵代数是向量化的一般示例**。循环由高度优化的外部库（例如BLAS）执行。如果您能找到一种使用矩阵代数解决问题的方法，则通常会得到非常快速的解决方案。解决矩阵代数问题的能力是经验的产物。一个很好的起点是询问您所在领域的经验丰富的人。
+
+**向量化有一个缺点**：很难预测操作的扩展方式。下面的示例测量使用字符子集从列表中查找1、10和100个元素所花费的时间。您可能希望查找10个元素所花费的时间是查找1所花费时间的10倍，查找100个元素所花费的时间又会长10倍。实际上，下面的示例显示查找100个元素只比查找1花费大约10倍的时间。之所以发生这种情况，是因为一旦达到一定的大小，内部实现就会切换到具有更高性能的策略。设置成本，但扩展性更好。
+
+```{r}
+lookup <- setNames(as.list(sample(100,26)),nm = letters)
+lookup
+lookup$a
+```
+
+```{r}
+x1 <- "j"
+x10 <- sample(letters, 10)
+x100 <- sample(letters, 100, replace = TRUE)
+x1
+x10
+x100
+```
+
+```{r}
+bench::mark(
+  lookup[x1],
+  lookup[x10],
+  lookup[x100],check = FALSE
+)[c("expression", "min", "median", "itr/sec", "n_gc")]
+```
+
+向量化并不能解决所有问题，与将现有算法折磨成使用向量化方法的算法相比，通常最好用`C ++`编写自己的向量化函数。
+
+**练习**
+
+```{r}
+bench::mark(
+  apply(x,1,sum),
+  rowSums(x),check = FALSE
+) %>% select("expression", "min", "median", "itr/sec", "n_gc")
+```
+
+```{r}
+sum(1:10 * (seq(0.1,1,0.1)))
+crossprod(1:10,seq(0.1,1,0.1))
+
+bench::mark(
+  sum(1:10 * (seq(0.1,1,0.1))),
+  crossprod(1:10,seq(0.1,1,0.1)),check = FALSE
+) %>% select("expression", "min", "median", "itr/sec", "n_gc")
+```
+
+## 函数化（避免复制）
+
+**缓慢的R代码的一个有害来源**是使对象带有循环。每当使用`c（）`，`append（）`，`cbind（）`，`rbind（）`或`paste（）`创建更大的对象时，R必须首先为新对象分配空间，然后将旧对象复制到其新位置。如果要重复多次（例如在for循环中），这可能会非常昂贵.
+
+我们首先生成一些随机字符串，然后使用`collapse（）`或通过一次粘贴`paste()`在一个循环中迭代地组合它们。请注意，随着字符串数量的增加，`collapse（）`的性能会变得相对较差：组合100个字符串所花的时间几乎是组合10个字符串所花时间的30倍。
+
+```{r}
+random_string <- function() {
+  paste(sample(letters, 50, replace = TRUE), collapse = "")
+}
+random_string()
+```
+
+```{r}
+replicate(10,1+1)
+```
+
+```{r}
+replicate(10,random_string()) %>% class()
+```
+
+```{r}
+strings10 <- replicate(10, random_string())
+strings100 <- replicate(100, random_string())
+```
+
+```{r}
+collapse <- function(xs) {
+  out <- ""
+  for (x in xs) {
+    out <- paste0(out, x)
+  }
+  out
+}
+collapse(1:10)
+```
+
+```{r}
+bench::mark(
+  loop10  = collapse(strings10),
+  loop100 = collapse(strings100),
+  vec10   = paste(strings10, collapse = ""),
+  vec100  = paste(strings100, collapse = ""),
+  check = FALSE
+)[c("expression", "min", "median", "itr/sec", "n_gc")]
+```
+
+## 案例研究: t 检验
+
+想象一下，我们已经进行了1000次实验（行），每个实验都收集了50个人（列）的数据。每个实验中的前25个人被分配到第1组，其余人分配到第2组。我们将首先生成一些随机数据来表示此问题：
+
+```{r}
+m <- 1000
+n <- 50
+X <- matrix(rnorm(m * n,mean = 10,sd = 3),nrow = m,ncol = n)
+X %>% head() %>% as.data.frame()
+grp <- rep(1:2,each = n/2)
+dim(X)
+```
+
+对于这种形式的数据，有两种使用`t.test（）`的方法。我们可以使用公式接口，也可以提供两个向量，每个组一个。时间显示，公式界面要慢得多。
+
+```{r}
+map(1:m,function(i){
+  t.test(X[i,]~grp)
+}) %>% map_dbl("statistic") %>% system.time()
+```
+
+```{r}
+map(1:m,function(i){
+  t.test(X[i,grp == 1],X[i,grp == 2])
+}) %>% map_dbl("statistic") %>% system.time()
+```
+
+```{r}
+map(1:m,function(i){
+  t.test(X[i,grp == 1],X[i,grp == 2])
+}) %>% map_dbl("statistic")
+```
+
+## 其他技巧
+
+能够编写**快速的R代码**是优秀的R程序员的一部分。除了本章中的特定提示之外，如果您想编写快速的R代码，还需要提高一般的编程技能。一些方法可以做到：
+
+您也可以向社区寻求帮助。`StackOverflow`可能是有用的资源。您需要做出一些努力来创建一个易于理解的示例，该示例还可以捕获问题的主要特征。如果您的示例过于复杂，很少有人会有时间和动力去尝试解决方案。如果太简单，您会得到解决玩具问题的答案，但不能解决真正的问题。如果您还尝试在`StackOverflow`上回答问题，那么您会很快了解什么是一个好的问题。
+
+```{r}
+
+```
+
+## [本章答案](https://advanced-r-solutions.rbind.io/improving-performance.html)
+
+```{r}
+table1 <- 1L:100000L
+x <- sample(table1,10000,replace = TRUE)
+bench::mark("match" = match(x,table1),
+            "fastmatch" = fastmatch::fmatch(x, table1),
+            check = FALSE,
+            relative = TRUE) -> lb
+lb %>% select(expression,min:n_gc)
+```
+
+Q: Which packages provide the ability to compute a **rolling mean**?
+
+```{r}
+zoo::rollmean(1:10,2)
+zoo::rollmean(1:10,2,align = "left")
+zoo::rollmean(1:10,1)
+```
+
+```{r}
+library(zoo)
+## rolling mean
+z <- zoo(11:15, as.Date(31:35))
+z
+```
+
+```{r}
+rollapply(z, 2, mean)
+
+## non-overlapping means
+z2 <- zoo(rnorm(6))
+z2
+rollapply(z2, 3, mean, by = 3)      # means of nonoverlapping groups of 3
+```
+
+```{r}
+z2
+## optimized vs. customized versions
+rollapply(z2, 3, mean)   # uses rollmean which is optimized for mean
+rollmean(z2, 3)          # same
+rollapply(z2, 3, (mean)) # does not use rollmean
+```
+
+```{r}
+## rolling regression:
+## set up multivariate zoo series with
+## number of UK driver deaths and lags 1 and 12
+seat <- as.zoo(log(UKDriverDeaths))
+time(seat) <- as.yearmon(time(seat))
+seat <- merge(y = seat, y1 = lag(seat, k = -1),
+  y12 = lag(seat, k = -12), all = FALSE)
+```
+
+```{r}
+## run a rolling regression with a 3-year time window
+## (similar to a SARIMA(1,0,0)(1,0,0)_12 fitted by OLS)
+rr <- rollapply(seat, width = 36,
+  FUN = function(z) coef(lm(y ~ y1 + y12, data = as.data.frame(z))),
+  by.column = FALSE, align = "right")
+```
+
+```{r,error=TRUE}
+## plot the changes in coefficients
+## showing the shifts after the oil crisis in Oct 1973
+## and after the seatbelt legislation change in Jan 1983
+plot(rr)
+```
+
+```{r}
+## rolling mean by time window (e.g., 3 days) rather than
+## by number of observations (e.g., when these are unequally spaced):
+#
+## - test data
+tt <- as.Date("2000-01-01") + c(1, 2, 5, 6, 7, 8, 10)
+z <- zoo(seq_along(tt), tt)
+## - fill it out to a daily series, zm, using NAs
+## using a zero width zoo series g on a grid
+g <- zoo(, seq(start(z), end(z), "day"))
+zm <- merge(z, g)
+## - 3-day rolling mean
+rollapply(zm, 3, mean, na.rm = TRUE, fill = NA)
+##
+## - without expansion to regular grid: find interval widths
+## that encompass the previous 3 days for each Date
+w <- seq_along(tt) - findInterval(tt - 3, tt)
+## a solution to computing the widths 'w' that is easier to read but slower
+## w <- sapply(tt, function(x) sum(tt >= x - 2 & tt <= x))
+##
+## - rolling sum from 3-day windows
+## without vs. with expansion to regular grid
+rollapplyr(z, w, sum)
+rollapplyr(zm, 3, sum, partial = TRUE, na.rm = TRUE)
+```
+
+```{r}
+## rolling weekly sums (with some missing dates)
+z <- zoo(1:11, as.Date("2016-03-09") + c(0:7, 9:10, 12))
+weeksum <- function(z) sum(z[time(z) > max(time(z)) - 7])
+zs <- rollapplyr(z, 7, weeksum, fill = NA, coredata = FALSE)
+merge(value = z, weeksum = zs)
+
+
+## replicate cumsum with either 'partial' or vector width 'k'
+cumsum(1:10)
+rollapplyr(1:10, 10, sum, partial = TRUE)
+rollapplyr(1:10, 1:10, sum)
+```
+
+`Rnorm (10，mean = 10:1)`从不同的正态分布产生10个随机数。这些正态分布的平均值不同。第一个表示10，第二个表示9，第三个表示8，以此类推。
+
+```{r}
+rnorm(10,mean = 1:10)
+```
+
+Q: How can you use `crossprod()` to compute a weighted sum? How much faster is it than the naive `sum(x * w)`?
+
+```{r}
+x <- rnorm(100)
+w <- rnorm(100)
+(x * w) %>% sum()
+crossprod(x,w)
+```
+
+```{r}
+all.equal(sum(x * w),
+          crossprod(x,w) %>% as.numeric())
+identical(sum(x * w),
+          crossprod(x,w) %>% as.numeric())
+```
+
+```{r}
+dimensions <- c(1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 0.5e7, 1e7)
+x_vector <- lapply(dimensions, rnorm)
+w_vector <- lapply(dimensions, rnorm)
+```
+
+```{r}
+map2(x_vector,w_vector,~sum(.x * .y))
+map2(x_vector,w_vector,crossprod)
+```
+
+```{r}
+bench::mark(sum(x_vector[[1]] * w_vector[[1]]),
+            crossprod(x_vector[[1]],w_vector[[1]])[[1]]) %>% 
+  mutate(across(expression,as.character))
+```
+
+```{r}
+map2(x_vector,w_vector,function(i,j){
+  bench::mark(sum(i * j),
+              crossprod(i,j)[[1]])
+} %>% mutate(across(expression,as.character))) %>% bind_rows() -> lb
+lb %<>% 
+  dplyr::mutate(dimension = factor(rep(dimensions, each = 2))) %>% 
+  relocate(dimension)
+
+lb %>% head()
+```
+
+```{r}
+lb %>% 
+  ggplot(aes(dimension,median,col = expression,group = expression)) +
+  geom_point() +
+  geom_line() +
+  mytheme
+```
+

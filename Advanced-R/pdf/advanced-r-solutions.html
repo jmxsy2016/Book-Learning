@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>11 Function operators | Advanced R Solutions</title>
+  <meta name="description" content="Solutions to the Exercises in Hadley Wickham’s book ‘Advanced R’." />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="11 Function operators | Advanced R Solutions" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://advanced-r-solutions.rbind.io/" />
+  <meta property="og:image" content="https://advanced-r-solutions.rbind.io/images/advrs_cover.png" />
+  <meta property="og:description" content="Solutions to the Exercises in Hadley Wickham’s book ‘Advanced R’." />
+  <meta name="github-repo" content="Tazinho/Advanced-R-Solutions" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="11 Function operators | Advanced R Solutions" />
+  
+  <meta name="twitter:description" content="Solutions to the Exercises in Hadley Wickham’s book ‘Advanced R’." />
+  <meta name="twitter:image" content="https://advanced-r-solutions.rbind.io/images/advrs_cover.png" />
+
+<meta name="author" content="Malte Grosser, Henning Bumann &amp; Hadley Wickham" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="function-factories.html"/>
+<link rel="next" href="base-types.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="adv-r.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="./">Advanced R Solutions</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#license"><i class="fa fa-check"></i>License</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#current-progress"><i class="fa fa-check"></i>Current Progress</a></li>
+</ul></li>
+<li class="part"><span><b>I Foundations</b></span></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="names-and-values.html"><a href="names-and-values.html"><i class="fa fa-check"></i><b>2</b> Names and values</a><ul>
+<li class="chapter" data-level="" data-path="names-and-values.html"><a href="names-and-values.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
+<li class="chapter" data-level="2.1" data-path="names-and-values.html"><a href="names-and-values.html#binding-basics"><i class="fa fa-check"></i><b>2.1</b> Binding basics</a></li>
+<li class="chapter" data-level="2.2" data-path="names-and-values.html"><a href="names-and-values.html#copy-on-modify"><i class="fa fa-check"></i><b>2.2</b> Copy-on-modify</a></li>
+<li class="chapter" data-level="2.3" data-path="names-and-values.html"><a href="names-and-values.html#object-size"><i class="fa fa-check"></i><b>2.3</b> Object size</a></li>
+<li class="chapter" data-level="2.4" data-path="names-and-values.html"><a href="names-and-values.html#modify-in-place"><i class="fa fa-check"></i><b>2.4</b> Modify-in-place</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="vectors.html"><a href="vectors.html"><i class="fa fa-check"></i><b>3</b> Vectors</a><ul>
+<li class="chapter" data-level="3.1" data-path="vectors.html"><a href="vectors.html#atomic-vectors"><i class="fa fa-check"></i><b>3.1</b> Atomic vectors</a></li>
+<li class="chapter" data-level="3.2" data-path="vectors.html"><a href="vectors.html#attributes"><i class="fa fa-check"></i><b>3.2</b> Attributes</a></li>
+<li class="chapter" data-level="3.3" data-path="vectors.html"><a href="vectors.html#s3-atomic-vectors"><i class="fa fa-check"></i><b>3.3</b> S3 atomic vectors</a></li>
+<li class="chapter" data-level="3.4" data-path="vectors.html"><a href="vectors.html#lists"><i class="fa fa-check"></i><b>3.4</b> Lists</a></li>
+<li class="chapter" data-level="3.5" data-path="vectors.html"><a href="vectors.html#data-frames-and-tibbles"><i class="fa fa-check"></i><b>3.5</b> Data frames and tibbles</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="subsetting.html"><a href="subsetting.html"><i class="fa fa-check"></i><b>4</b> Subsetting</a><ul>
+<li class="chapter" data-level="4.1" data-path="subsetting.html"><a href="subsetting.html#selecting-multiple-elements"><i class="fa fa-check"></i><b>4.1</b> Selecting multiple elements</a></li>
+<li class="chapter" data-level="4.2" data-path="subsetting.html"><a href="subsetting.html#selecting-a-single-element"><i class="fa fa-check"></i><b>4.2</b> Selecting a single element</a></li>
+<li class="chapter" data-level="4.3" data-path="subsetting.html"><a href="subsetting.html#applications"><i class="fa fa-check"></i><b>4.3</b> Applications</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="control-flow.html"><a href="control-flow.html"><i class="fa fa-check"></i><b>5</b> Control flow</a><ul>
+<li class="chapter" data-level="5.1" data-path="control-flow.html"><a href="control-flow.html#choices"><i class="fa fa-check"></i><b>5.1</b> Choices</a></li>
+<li class="chapter" data-level="5.2" data-path="control-flow.html"><a href="control-flow.html#loops"><i class="fa fa-check"></i><b>5.2</b> Loops</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>6</b> Functions</a><ul>
+<li class="chapter" data-level="6.1" data-path="functions.html"><a href="functions.html#function-fundamentals"><i class="fa fa-check"></i><b>6.1</b> Function fundamentals</a></li>
+<li class="chapter" data-level="6.2" data-path="functions.html"><a href="functions.html#lexical-scoping"><i class="fa fa-check"></i><b>6.2</b> Lexical Scoping</a></li>
+<li class="chapter" data-level="6.3" data-path="functions.html"><a href="functions.html#lazy-evaluation"><i class="fa fa-check"></i><b>6.3</b> Lazy evaluation</a></li>
+<li class="chapter" data-level="6.4" data-path="functions.html"><a href="functions.html#dot-dot-dot"><i class="fa fa-check"></i><b>6.4</b> <code>...</code> (dot-dot-dot)</a></li>
+<li class="chapter" data-level="6.5" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>6.5</b> Exiting a function</a></li>
+<li class="chapter" data-level="6.6" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>6.6</b> Function forms</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="environments.html"><a href="environments.html"><i class="fa fa-check"></i><b>7</b> Environments</a><ul>
+<li class="chapter" data-level="7.1" data-path="environments.html"><a href="environments.html#environment-basics"><i class="fa fa-check"></i><b>7.1</b> Environment basics</a></li>
+<li class="chapter" data-level="7.2" data-path="environments.html"><a href="environments.html#recursing-over-environments"><i class="fa fa-check"></i><b>7.2</b> Recursing over environments</a></li>
+<li class="chapter" data-level="7.3" data-path="environments.html"><a href="environments.html#special-environments"><i class="fa fa-check"></i><b>7.3</b> Special environments</a></li>
+<li class="chapter" data-level="7.4" data-path="environments.html"><a href="environments.html#the-call-stack"><i class="fa fa-check"></i><b>7.4</b> The call stack</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="conditions.html"><a href="conditions.html"><i class="fa fa-check"></i><b>8</b> Conditions</a><ul>
+<li class="chapter" data-level="8.1" data-path="conditions.html"><a href="conditions.html#signalling-conditions"><i class="fa fa-check"></i><b>8.1</b> Signalling conditions</a></li>
+<li class="chapter" data-level="8.2" data-path="conditions.html"><a href="conditions.html#handling-conditions"><i class="fa fa-check"></i><b>8.2</b> Handling conditions</a></li>
+<li class="chapter" data-level="8.3" data-path="conditions.html"><a href="conditions.html#custom-conditions"><i class="fa fa-check"></i><b>8.3</b> Custom conditions</a></li>
+<li class="chapter" data-level="8.4" data-path="subsetting.html"><a href="subsetting.html#applications"><i class="fa fa-check"></i><b>8.4</b> Applications</a></li>
+</ul></li>
+<li class="part"><span><b>II Functional programming</b></span></li>
+<li class="chapter" data-level="9" data-path="functionals.html"><a href="functionals.html"><i class="fa fa-check"></i><b>9</b> Functionals</a><ul>
+<li class="chapter" data-level="9.1" data-path="names-and-values.html"><a href="names-and-values.html#prerequisites"><i class="fa fa-check"></i><b>9.1</b> Prerequisites</a></li>
+<li class="chapter" data-level="9.2" data-path="functionals.html"><a href="functionals.html#my-first-functional-map"><i class="fa fa-check"></i><b>9.2</b> My first functional: <code>map()</code></a></li>
+<li class="chapter" data-level="9.3" data-path="functionals.html"><a href="functionals.html#map-variants"><i class="fa fa-check"></i><b>9.3</b> Map variants</a></li>
+<li class="chapter" data-level="9.4" data-path="functionals.html"><a href="functionals.html#predicate-functionals"><i class="fa fa-check"></i><b>9.4</b> Predicate Functionals</a></li>
+<li class="chapter" data-level="9.5" data-path="functionals.html"><a href="functionals.html#base-functionals"><i class="fa fa-check"></i><b>9.5</b> Base functionals</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="function-factories.html"><a href="function-factories.html"><i class="fa fa-check"></i><b>10</b> Function factories</a><ul>
+<li class="chapter" data-level="10.1" data-path="names-and-values.html"><a href="names-and-values.html#prerequisites"><i class="fa fa-check"></i><b>10.1</b> Prerequisites</a></li>
+<li class="chapter" data-level="10.2" data-path="function-factories.html"><a href="function-factories.html#factory-fundamentals"><i class="fa fa-check"></i><b>10.2</b> Factory fundamentals</a></li>
+<li class="chapter" data-level="10.3" data-path="function-factories.html"><a href="function-factories.html#graphical-factories"><i class="fa fa-check"></i><b>10.3</b> Graphical factories</a></li>
+<li class="chapter" data-level="10.4" data-path="function-factories.html"><a href="function-factories.html#statistical-factories"><i class="fa fa-check"></i><b>10.4</b> Statistical factories</a></li>
+<li class="chapter" data-level="10.5" data-path="function-factories.html"><a href="function-factories.html#function-factories-functionals"><i class="fa fa-check"></i><b>10.5</b> Function factories + functionals</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="function-operators.html"><a href="function-operators.html"><i class="fa fa-check"></i><b>11</b> Function operators</a><ul>
+<li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#existing-function-operators"><i class="fa fa-check"></i><b>11.1</b> Existing function operators</a></li>
+<li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#case-study-creating-your-own-function-operators"><i class="fa fa-check"></i><b>11.2</b> Case study: Creating your own function operators</a></li>
+</ul></li>
+<li class="part"><span><b>III Object oriented programming</b></span></li>
+<li class="chapter" data-level="12" data-path="base-types.html"><a href="base-types.html"><i class="fa fa-check"></i><b>12</b> Base types</a></li>
+<li class="chapter" data-level="13" data-path="s3.html"><a href="s3.html"><i class="fa fa-check"></i><b>13</b> S3</a><ul>
+<li class="chapter" data-level="13.1" data-path="s3.html"><a href="s3.html#basics"><i class="fa fa-check"></i><b>13.1</b> Basics</a></li>
+<li class="chapter" data-level="13.2" data-path="s3.html"><a href="s3.html#classes"><i class="fa fa-check"></i><b>13.2</b> Classes</a></li>
+<li class="chapter" data-level="13.3" data-path="s3.html"><a href="s3.html#generics-and-methods"><i class="fa fa-check"></i><b>13.3</b> Generics and methods</a></li>
+<li class="chapter" data-level="13.4" data-path="s3.html"><a href="s3.html#object-styles"><i class="fa fa-check"></i><b>13.4</b> Object styles</a></li>
+<li class="chapter" data-level="13.5" data-path="s3.html"><a href="s3.html#inheritance"><i class="fa fa-check"></i><b>13.5</b> Inheritance</a></li>
+<li class="chapter" data-level="13.6" data-path="s3.html"><a href="s3.html#dispatch-details"><i class="fa fa-check"></i><b>13.6</b> Dispatch details</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="r6.html"><a href="r6.html"><i class="fa fa-check"></i><b>14</b> R6</a><ul>
+<li class="chapter" data-level="14.1" data-path="names-and-values.html"><a href="names-and-values.html#prerequisites"><i class="fa fa-check"></i><b>14.1</b> Prerequisites</a></li>
+<li class="chapter" data-level="14.2" data-path="r6.html"><a href="r6.html#classes-and-methods"><i class="fa fa-check"></i><b>14.2</b> Classes and methods</a></li>
+<li class="chapter" data-level="14.3" data-path="r6.html"><a href="r6.html#controlling-access"><i class="fa fa-check"></i><b>14.3</b> Controlling access</a></li>
+<li class="chapter" data-level="14.4" data-path="r6.html"><a href="r6.html#reference-semantics"><i class="fa fa-check"></i><b>14.4</b> Reference semantics</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="s4.html"><a href="s4.html"><i class="fa fa-check"></i><b>15</b> S4</a><ul>
+<li class="chapter" data-level="15.1" data-path="names-and-values.html"><a href="names-and-values.html#prerequisites"><i class="fa fa-check"></i><b>15.1</b> Prerequisites</a></li>
+<li class="chapter" data-level="15.2" data-path="s3.html"><a href="s3.html#basics"><i class="fa fa-check"></i><b>15.2</b> Basics</a></li>
+<li class="chapter" data-level="15.3" data-path="s3.html"><a href="s3.html#classes"><i class="fa fa-check"></i><b>15.3</b> Classes</a></li>
+<li class="chapter" data-level="15.4" data-path="s3.html"><a href="s3.html#generics-and-methods"><i class="fa fa-check"></i><b>15.4</b> Generics and methods</a></li>
+<li class="chapter" data-level="15.5" data-path="s4.html"><a href="s4.html#method-dispatch"><i class="fa fa-check"></i><b>15.5</b> Method dispatch</a></li>
+<li class="chapter" data-level="15.6" data-path="s4.html"><a href="s4.html#s4-and-s3"><i class="fa fa-check"></i><b>15.6</b> S4 and S3</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="trade-offs.html"><a href="trade-offs.html"><i class="fa fa-check"></i><b>16</b> Trade-offs</a></li>
+<li class="part"><span><b>IV Metaprogramming</b></span></li>
+<li class="chapter" data-level="17" data-path="big-picture.html"><a href="big-picture.html"><i class="fa fa-check"></i><b>17</b> Big picture</a></li>
+<li class="chapter" data-level="18" data-path="expressions.html"><a href="expressions.html"><i class="fa fa-check"></i><b>18</b> Expressions</a><ul>
+<li class="chapter" data-level="" data-path="names-and-values.html"><a href="names-and-values.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
+<li class="chapter" data-level="18.1" data-path="expressions.html"><a href="expressions.html#abstract-syntax-trees"><i class="fa fa-check"></i><b>18.1</b> Abstract syntax trees</a></li>
+<li class="chapter" data-level="18.2" data-path="expressions.html"><a href="expressions.html#expressions-1"><i class="fa fa-check"></i><b>18.2</b> Expressions</a></li>
+<li class="chapter" data-level="18.3" data-path="expressions.html"><a href="expressions.html#parsing-and-grammar"><i class="fa fa-check"></i><b>18.3</b> Parsing and grammar</a></li>
+<li class="chapter" data-level="18.4" data-path="expressions.html"><a href="expressions.html#ast-funs"><i class="fa fa-check"></i><b>18.4</b> Walking AST with recursive functions</a></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="quasiquotation.html"><a href="quasiquotation.html"><i class="fa fa-check"></i><b>19</b> Quasiquotation</a><ul>
+<li class="chapter" data-level="" data-path="names-and-values.html"><a href="names-and-values.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
+<li class="chapter" data-level="19.1" data-path="quasiquotation.html"><a href="quasiquotation.html#motivation"><i class="fa fa-check"></i><b>19.1</b> Motivation</a></li>
+<li class="chapter" data-level="19.2" data-path="quasiquotation.html"><a href="quasiquotation.html#quoting"><i class="fa fa-check"></i><b>19.2</b> Quoting</a></li>
+<li class="chapter" data-level="19.3" data-path="quasiquotation.html"><a href="quasiquotation.html#unquoting"><i class="fa fa-check"></i><b>19.3</b> Unquoting</a></li>
+<li class="chapter" data-level="19.4" data-path="quasiquotation.html"><a href="quasiquotation.html#dot-dot-dot-..."><i class="fa fa-check"></i><b>19.4</b> Dot-dot-dot (<code>...</code>)</a></li>
+<li class="chapter" data-level="19.5" data-path="quasiquotation.html"><a href="quasiquotation.html#expr-case-studies"><i class="fa fa-check"></i><b>19.5</b> Case studies</a></li>
+</ul></li>
+<li class="chapter" data-level="20" data-path="evaluation.html"><a href="evaluation.html"><i class="fa fa-check"></i><b>20</b> Evaluation</a><ul>
+<li class="chapter" data-level="20.1" data-path="names-and-values.html"><a href="names-and-values.html#prerequisites"><i class="fa fa-check"></i><b>20.1</b> Prerequisites</a></li>
+<li class="chapter" data-level="20.2" data-path="evaluation.html"><a href="evaluation.html#evaluation-basics"><i class="fa fa-check"></i><b>20.2</b> Evaluation basics</a></li>
+<li class="chapter" data-level="20.3" data-path="evaluation.html"><a href="evaluation.html#quosures"><i class="fa fa-check"></i><b>20.3</b> Quosures</a></li>
+<li class="chapter" data-level="20.4" data-path="evaluation.html"><a href="evaluation.html#data-masks"><i class="fa fa-check"></i><b>20.4</b> Data masks</a></li>
+<li class="chapter" data-level="20.5" data-path="evaluation.html"><a href="evaluation.html#using-tidy-evaluation"><i class="fa fa-check"></i><b>20.5</b> Using tidy evaluation</a></li>
+<li class="chapter" data-level="20.6" data-path="evaluation.html"><a href="evaluation.html#base-evaluation"><i class="fa fa-check"></i><b>20.6</b> Base evaluation</a></li>
+</ul></li>
+<li class="chapter" data-level="21" data-path="translating-r-code.html"><a href="translating-r-code.html"><i class="fa fa-check"></i><b>21</b> Translating R code</a><ul>
+<li class="chapter" data-level="21.1" data-path="translating-r-code.html"><a href="translating-r-code.html#html"><i class="fa fa-check"></i><b>21.1</b> HTML</a></li>
+</ul></li>
+<li class="part"><span><b>V Techniques</b></span></li>
+<li class="chapter" data-level="22" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>22</b> Debugging</a></li>
+<li class="chapter" data-level="23" data-path="measuring-performance.html"><a href="measuring-performance.html"><i class="fa fa-check"></i><b>23</b> Measuring performance</a><ul>
+<li class="chapter" data-level="23.1" data-path="measuring-performance.html"><a href="measuring-performance.html#profiling"><i class="fa fa-check"></i><b>23.1</b> Profiling</a></li>
+<li class="chapter" data-level="23.2" data-path="measuring-performance.html"><a href="measuring-performance.html#microbenchmarking"><i class="fa fa-check"></i><b>23.2</b> Microbenchmarking</a></li>
+</ul></li>
+<li class="chapter" data-level="24" data-path="improving-performance.html"><a href="improving-performance.html"><i class="fa fa-check"></i><b>24</b> Improving performance</a><ul>
+<li class="chapter" data-level="24.1" data-path="improving-performance.html"><a href="improving-performance.html#checking-for-existing-solutions"><i class="fa fa-check"></i><b>24.1</b> Checking for existing solutions</a></li>
+<li class="chapter" data-level="24.2" data-path="improving-performance.html"><a href="improving-performance.html#doing-as-little-as-possible"><i class="fa fa-check"></i><b>24.2</b> Doing as little as possible</a></li>
+<li class="chapter" data-level="24.3" data-path="improving-performance.html"><a href="improving-performance.html#vectorise"><i class="fa fa-check"></i><b>24.3</b> Vectorise</a></li>
+</ul></li>
+<li class="chapter" data-level="25" data-path="rewriting-r-code-in-c.html"><a href="rewriting-r-code-in-c.html"><i class="fa fa-check"></i><b>25</b> Rewriting R code in C++</a><ul>
+<li class="chapter" data-level="25.1" data-path="rewriting-r-code-in-c.html"><a href="rewriting-r-code-in-c.html#getting-started-with-c"><i class="fa fa-check"></i><b>25.1</b> Getting started with C++</a></li>
+<li class="chapter" data-level="25.2" data-path="rewriting-r-code-in-c.html"><a href="rewriting-r-code-in-c.html#missing-values"><i class="fa fa-check"></i><b>25.2</b> Missing values</a></li>
+<li class="chapter" data-level="25.3" data-path="rewriting-r-code-in-c.html"><a href="rewriting-r-code-in-c.html#standard-template-library"><i class="fa fa-check"></i><b>25.3</b> Standard Template Library</a></li>
+</ul></li>
+<li class="part"><span><b>VI Miscellaneous</b></span></li>
+<li class="chapter" data-level="26" data-path="deprecated.html"><a href="deprecated.html"><i class="fa fa-check"></i><b>26</b> Deprecated</a><ul>
+<li class="chapter" data-level="26.1" data-path="conditions.html"><a href="conditions.html#conditions"><i class="fa fa-check"></i><b>26.1</b> Conditions</a></li>
+<li class="chapter" data-level="26.2" data-path="deprecated.html"><a href="deprecated.html#expressions-new"><i class="fa fa-check"></i><b>26.2</b> Expressions (new)</a></li>
+<li class="chapter" data-level="26.3" data-path="functionals.html"><a href="functionals.html#functionals"><i class="fa fa-check"></i><b>26.3</b> Functionals</a><ul>
+<li class="chapter" data-level="26.3.1" data-path="deprecated.html"><a href="deprecated.html#my-first-functional-lapply"><i class="fa fa-check"></i><b>26.3.1</b> My first functional: <code>lapply()</code></a></li>
+<li class="chapter" data-level="26.3.2" data-path="deprecated.html"><a href="deprecated.html#for-loops-functionals-friends-of-lapply"><i class="fa fa-check"></i><b>26.3.2</b> For loops functionals: friends of lapply():</a></li>
+<li class="chapter" data-level="26.3.3" data-path="deprecated.html"><a href="deprecated.html#manipulating-matrices-and-data-frames"><i class="fa fa-check"></i><b>26.3.3</b> Manipulating matrices and data frames</a></li>
+<li class="chapter" data-level="26.3.4" data-path="deprecated.html"><a href="deprecated.html#manipulating-lists"><i class="fa fa-check"></i><b>26.3.4</b> Manipulating lists</a></li>
+<li class="chapter" data-level="26.3.5" data-path="deprecated.html"><a href="deprecated.html#list-of-functions"><i class="fa fa-check"></i><b>26.3.5</b> List of functions</a></li>
+<li class="chapter" data-level="26.3.6" data-path="deprecated.html"><a href="deprecated.html#mathematical-functionals"><i class="fa fa-check"></i><b>26.3.6</b> Mathematical functionals</a></li>
+<li class="chapter" data-level="26.3.7" data-path="deprecated.html"><a href="deprecated.html#a-family-of-functions"><i class="fa fa-check"></i><b>26.3.7</b> A family of functions</a></li>
+</ul></li>
+<li class="chapter" data-level="26.4" data-path="function-factories.html"><a href="function-factories.html#function-factories"><i class="fa fa-check"></i><b>26.4</b> Function Factories</a><ul>
+<li class="chapter" data-level="26.4.1" data-path="deprecated.html"><a href="deprecated.html#closures"><i class="fa fa-check"></i><b>26.4.1</b> Closures</a></li>
+<li class="chapter" data-level="26.4.2" data-path="deprecated.html"><a href="deprecated.html#case-study-numerical-integration"><i class="fa fa-check"></i><b>26.4.2</b> Case study: numerical integration</a></li>
+</ul></li>
+<li class="chapter" data-level="26.5" data-path="s3.html"><a href="s3.html#s3"><i class="fa fa-check"></i><b>26.5</b> S3</a><ul>
+<li class="chapter" data-level="26.5.1" data-path="s3.html"><a href="s3.html#inheritance"><i class="fa fa-check"></i><b>26.5.1</b> Inheritance</a></li>
+</ul></li>
+<li class="chapter" data-level="26.6" data-path="s4.html"><a href="s4.html#s4"><i class="fa fa-check"></i><b>26.6</b> S4</a><ul>
+<li class="chapter" data-level="26.6.1" data-path="s3.html"><a href="s3.html#generics-and-methods"><i class="fa fa-check"></i><b>26.6.1</b> Generics and methods</a></li>
+</ul></li>
+<li class="chapter" data-level="26.7" data-path="expressions.html"><a href="expressions.html#expressions"><i class="fa fa-check"></i><b>26.7</b> Expressions</a><ul>
+<li class="chapter" data-level="26.7.1" data-path="expressions.html"><a href="expressions.html#abstract-syntax-trees"><i class="fa fa-check"></i><b>26.7.1</b> Abstract syntax trees</a></li>
+</ul></li>
+<li class="chapter" data-level="26.8" data-path="deprecated.html"><a href="deprecated.html#quasiquotation-new"><i class="fa fa-check"></i><b>26.8</b> Quasiquotation (new)</a></li>
+<li class="chapter" data-level="26.9" data-path="deprecated.html"><a href="deprecated.html#fo"><i class="fa fa-check"></i><b>26.9</b> FO</a><ul>
+<li class="chapter" data-level="26.9.1" data-path="deprecated.html"><a href="deprecated.html#behavioural-fos"><i class="fa fa-check"></i><b>26.9.1</b> Behavioural FOs</a></li>
+<li class="chapter" data-level="26.9.2" data-path="deprecated.html"><a href="deprecated.html#output-fos"><i class="fa fa-check"></i><b>26.9.2</b> Output FOs</a></li>
+<li class="chapter" data-level="26.9.3" data-path="deprecated.html"><a href="deprecated.html#input-fos"><i class="fa fa-check"></i><b>26.9.3</b> Input FOs</a></li>
+<li class="chapter" data-level="26.9.4" data-path="deprecated.html"><a href="deprecated.html#combining-fos"><i class="fa fa-check"></i><b>26.9.4</b> Combining FOs</a></li>
+</ul></li>
+<li class="chapter" data-level="26.10" data-path="deprecated.html"><a href="deprecated.html#expressions-again"><i class="fa fa-check"></i><b>26.10</b> Expressions (again)</a><ul>
+<li class="chapter" data-level="26.10.1" data-path="deprecated.html"><a href="deprecated.html#data-structures"><i class="fa fa-check"></i><b>26.10.1</b> Data structures</a></li>
+<li class="chapter" data-level="26.10.2" data-path="deprecated.html"><a href="deprecated.html#parsing-and-deparsing"><i class="fa fa-check"></i><b>26.10.2</b> Parsing and deparsing</a></li>
+<li class="chapter" data-level="26.10.3" data-path="deprecated.html"><a href="deprecated.html#rs-grammar"><i class="fa fa-check"></i><b>26.10.3</b> R’s grammar</a></li>
+</ul></li>
+<li class="chapter" data-level="26.11" data-path="quasiquotation.html"><a href="quasiquotation.html#quasiquotation"><i class="fa fa-check"></i><b>26.11</b> Quasiquotation</a><ul>
+<li class="chapter" data-level="26.11.1" data-path="deprecated.html"><a href="deprecated.html#old-exercises-unquoting"><i class="fa fa-check"></i><b>26.11.1</b> Old exercises Unquoting</a></li>
+<li class="chapter" data-level="26.11.2" data-path="quasiquotation.html"><a href="quasiquotation.html#unquoting"><i class="fa fa-check"></i><b>26.11.2</b> Unquoting</a></li>
+<li class="chapter" data-level="26.11.3" data-path="deprecated.html"><a href="deprecated.html#quasi-case-studies"><i class="fa fa-check"></i><b>26.11.3</b> Case studies</a></li>
+</ul></li>
+<li class="chapter" data-level="26.12" data-path="deprecated.html"><a href="deprecated.html#more-old-evaluation-exercises"><i class="fa fa-check"></i><b>26.12</b> More old evaluation exercises</a></li>
+<li class="chapter" data-level="26.13" data-path="deprecated.html"><a href="deprecated.html#deprecated-evaluation-basics"><i class="fa fa-check"></i><b>26.13</b> Deprecated evaluation basics</a></li>
+<li class="chapter" data-level="26.14" data-path="deprecated.html"><a href="deprecated.html#measuring-performance-old-exercises"><i class="fa fa-check"></i><b>26.14</b> Measuring performance (Old exercises)</a></li>
+<li class="chapter" data-level="26.15" data-path="improving-performance.html"><a href="improving-performance.html#improving-performance"><i class="fa fa-check"></i><b>26.15</b> Improving Performance</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Advanced R Solutions</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="function-operators" class="section level1">
+<h1><span class="header-section-number">11</span> Function operators</h1>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb214-1" data-line-number="1"><span class="kw">library</span>(purrr)</a></code></pre></div>
+<div id="existing-function-operators" class="section level2">
+<h2><span class="header-section-number">11.1</span> Existing function operators</h2>
+<ol style="list-style-type: decimal">
+<li><p><strong><span class="Q">Q</span></strong>: Base R provides a function operator in the form of <code>Vectorize()</code>. What does it do? When might you use it?</p>
+<p><strong><span class="solved">A</span></strong>: In R a lot of functions are “vectorised”. Vectorised has two meanings. First, it means (broadly) that a function inputs a vector or vectors, and does something to each element. Secondly, it usually implies that these operations are implemented in a compiled language such as C or Fortran, so that the implementation is very fast.</p>
+<p>However, despite what the function’s name implies, <code>Vectorize()</code> is not able to speed up the provided function. It rather changes the input format of the supplied arguments (<code>vectorize.args</code>), so that they can be iterated over.</p>
+<p>In essence, <code>Vectorize()</code> is mostly a wrapper for <code>mapply()</code>. Let’s take a look at an example from the documentation:</p>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb215-1" data-line-number="1">vrep &lt;-<span class="st"> </span><span class="kw">Vectorize</span>(rep.int)</a>
+<a class="sourceLine" id="cb215-2" data-line-number="2">vrep</a>
+<a class="sourceLine" id="cb215-3" data-line-number="3"><span class="co">#&gt; function (x, times) </span></a>
+<a class="sourceLine" id="cb215-4" data-line-number="4"><span class="co">#&gt; {</span></a>
+<a class="sourceLine" id="cb215-5" data-line-number="5"><span class="co">#&gt;     args &lt;- lapply(as.list(match.call())[-1L], eval, parent.frame())</span></a>
+<a class="sourceLine" id="cb215-6" data-line-number="6"><span class="co">#&gt;     names &lt;- if (is.null(names(args))) </span></a>
+<a class="sourceLine" id="cb215-7" data-line-number="7"><span class="co">#&gt;         character(length(args))</span></a>
+<a class="sourceLine" id="cb215-8" data-line-number="8"><span class="co">#&gt;     else names(args)</span></a>
+<a class="sourceLine" id="cb215-9" data-line-number="9"><span class="co">#&gt;     dovec &lt;- names %in% vectorize.args</span></a>
+<a class="sourceLine" id="cb215-10" data-line-number="10"><span class="co">#&gt;     do.call(&quot;mapply&quot;, c(FUN = FUN, args[dovec], MoreArgs = list(args[!dovec]), </span></a>
+<a class="sourceLine" id="cb215-11" data-line-number="11"><span class="co">#&gt;         SIMPLIFY = SIMPLIFY, USE.NAMES = USE.NAMES))</span></a>
+<a class="sourceLine" id="cb215-12" data-line-number="12"><span class="co">#&gt; }</span></a>
+<a class="sourceLine" id="cb215-13" data-line-number="13"><span class="co">#&gt; &lt;environment: 0x2c2ab98&gt;</span></a>
+<a class="sourceLine" id="cb215-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb215-15" data-line-number="15"><span class="co"># Application</span></a>
+<a class="sourceLine" id="cb215-16" data-line-number="16"><span class="kw">vrep</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">3</span><span class="op">:</span><span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb215-17" data-line-number="17"><span class="co">#&gt; [[1]]</span></a>
+<a class="sourceLine" id="cb215-18" data-line-number="18"><span class="co">#&gt; [1] 1 1 1</span></a>
+<a class="sourceLine" id="cb215-19" data-line-number="19"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb215-20" data-line-number="20"><span class="co">#&gt; [[2]]</span></a>
+<a class="sourceLine" id="cb215-21" data-line-number="21"><span class="co">#&gt; [1] 2 2 2 2</span></a>
+<a class="sourceLine" id="cb215-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb215-23" data-line-number="23"><span class="co"># Naming arguments still works</span></a>
+<a class="sourceLine" id="cb215-24" data-line-number="24"><span class="kw">vrep</span>(<span class="dt">times =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dt">x =</span> <span class="dv">3</span><span class="op">:</span><span class="dv">4</span>)  </a>
+<a class="sourceLine" id="cb215-25" data-line-number="25"><span class="co">#&gt; [[1]]</span></a>
+<a class="sourceLine" id="cb215-26" data-line-number="26"><span class="co">#&gt; [1] 3</span></a>
+<a class="sourceLine" id="cb215-27" data-line-number="27"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb215-28" data-line-number="28"><span class="co">#&gt; [[2]]</span></a>
+<a class="sourceLine" id="cb215-29" data-line-number="29"><span class="co">#&gt; [1] 4 4</span></a></code></pre></div>
+<p><code>Vectorize()</code> provides a convenient and concise notation to iterate over multiple arguments, but has some major drawbacks that mean you generally shouldn’t use it. See <a href="https://www.jimhester.com/post/2018-04-12-vectorize/" class="uri">https://www.jimhester.com/post/2018-04-12-vectorize/</a> for more details.</p></li>
+<li><p><strong><span class="Q">Q</span></strong>: Read the source code for <code>possibly()</code>. How does it work?</p>
+<p><strong><span class="solved">A</span></strong>: <code>possibly()</code> modifies functions to return a specified default value in case of an error (<code>otherwise</code>) and to suppress any error messages (<code>quiet = TRUE</code>).</p>
+<p>While reading the source code, we notice that <code>possibly()</code> internally uses <code>purrr::as_mapper()</code>. This enables users to supply not only functions, but also formulas or atomics via the same syntax as known from other functions in the purrr package. Besides this, the new default value (<code>otherwise</code>) gets evaluated once to make it (almost) immutable from now on.</p>
+<p>The main functionality of <code>possibly()</code> is provided by <code>base::tryCatch()</code>. In this part the supplied function (<code>.f</code>) gets wrapped and the error and interrupt handling are specified.</p>
+<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb216-1" data-line-number="1">possibly</a>
+<a class="sourceLine" id="cb216-2" data-line-number="2"><span class="co">#&gt; function (.f, otherwise, quiet = TRUE) </span></a>
+<a class="sourceLine" id="cb216-3" data-line-number="3"><span class="co">#&gt; {</span></a>
+<a class="sourceLine" id="cb216-4" data-line-number="4"><span class="co">#&gt;     .f &lt;- as_mapper(.f)</span></a>
+<a class="sourceLine" id="cb216-5" data-line-number="5"><span class="co">#&gt;     force(otherwise)</span></a>
+<a class="sourceLine" id="cb216-6" data-line-number="6"><span class="co">#&gt;     function(...) {</span></a>
+<a class="sourceLine" id="cb216-7" data-line-number="7"><span class="co">#&gt;         tryCatch(.f(...), error = function(e) {</span></a>
+<a class="sourceLine" id="cb216-8" data-line-number="8"><span class="co">#&gt;             if (!quiet) </span></a>
+<a class="sourceLine" id="cb216-9" data-line-number="9"><span class="co">#&gt;                 message(&quot;Error: &quot;, e$message)</span></a>
+<a class="sourceLine" id="cb216-10" data-line-number="10"><span class="co">#&gt;             otherwise</span></a>
+<a class="sourceLine" id="cb216-11" data-line-number="11"><span class="co">#&gt;         }, interrupt = function(e) {</span></a>
+<a class="sourceLine" id="cb216-12" data-line-number="12"><span class="co">#&gt;             stop(&quot;Terminated by user&quot;, call. = FALSE)</span></a>
+<a class="sourceLine" id="cb216-13" data-line-number="13"><span class="co">#&gt;         })</span></a>
+<a class="sourceLine" id="cb216-14" data-line-number="14"><span class="co">#&gt;     }</span></a>
+<a class="sourceLine" id="cb216-15" data-line-number="15"><span class="co">#&gt; }</span></a>
+<a class="sourceLine" id="cb216-16" data-line-number="16"><span class="co">#&gt; &lt;bytecode: 0x4a9c3e0&gt;</span></a>
+<a class="sourceLine" id="cb216-17" data-line-number="17"><span class="co">#&gt; &lt;environment: namespace:purrr&gt;</span></a></code></pre></div></li>
+<li><p><strong><span class="Q">Q</span></strong>: Read the source code for <code>safely()</code>. How does it work?</p>
+<p><strong><span class="solved">A</span></strong>: <code>safely()</code> modifies functions to return a list, containing the elements “result” and “error”. It works in a similar fashion as <code>possibly()</code> and besides using <code>as_mapper()</code>, <code>safely()</code> also provides the <code>otherwise</code> and <code>quiet</code> argument. However, in order to provide the result and the error in a consistent way, the <code>tryCatch()</code> part of the implementation returns a list with the same structure in both cases. In the case of successful evaluation “error” equals to <code>NULL</code> and in case of an error “result” equals to <code>otherwise</code>, which is <code>NULL</code> by default.</p>
+<p>As the <code>tryCatch()</code> part is hidden in the internal <code>purrr:::capture_output()</code> function, we provide it here in addition to <code>safely()</code>:</p>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb217-1" data-line-number="1">safely</a>
+<a class="sourceLine" id="cb217-2" data-line-number="2"><span class="co">#&gt; function (.f, otherwise = NULL, quiet = TRUE) </span></a>
+<a class="sourceLine" id="cb217-3" data-line-number="3"><span class="co">#&gt; {</span></a>
+<a class="sourceLine" id="cb217-4" data-line-number="4"><span class="co">#&gt;     .f &lt;- as_mapper(.f)</span></a>
+<a class="sourceLine" id="cb217-5" data-line-number="5"><span class="co">#&gt;     function(...) capture_error(.f(...), otherwise, quiet)</span></a>
+<a class="sourceLine" id="cb217-6" data-line-number="6"><span class="co">#&gt; }</span></a>
+<a class="sourceLine" id="cb217-7" data-line-number="7"><span class="co">#&gt; &lt;bytecode: 0x4490ae8&gt;</span></a>
+<a class="sourceLine" id="cb217-8" data-line-number="8"><span class="co">#&gt; &lt;environment: namespace:purrr&gt;</span></a>
+<a class="sourceLine" id="cb217-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb217-10" data-line-number="10">purrr<span class="op">:::</span>capture_error</a>
+<a class="sourceLine" id="cb217-11" data-line-number="11"><span class="co">#&gt; function (code, otherwise = NULL, quiet = TRUE) </span></a>
+<a class="sourceLine" id="cb217-12" data-line-number="12"><span class="co">#&gt; {</span></a>
+<a class="sourceLine" id="cb217-13" data-line-number="13"><span class="co">#&gt;     tryCatch(list(result = code, error = NULL), error = function(e) {</span></a>
+<a class="sourceLine" id="cb217-14" data-line-number="14"><span class="co">#&gt;         if (!quiet) </span></a>
+<a class="sourceLine" id="cb217-15" data-line-number="15"><span class="co">#&gt;             message(&quot;Error: &quot;, e$message)</span></a>
+<a class="sourceLine" id="cb217-16" data-line-number="16"><span class="co">#&gt;         list(result = otherwise, error = e)</span></a>
+<a class="sourceLine" id="cb217-17" data-line-number="17"><span class="co">#&gt;     }, interrupt = function(e) {</span></a>
+<a class="sourceLine" id="cb217-18" data-line-number="18"><span class="co">#&gt;         stop(&quot;Terminated by user&quot;, call. = FALSE)</span></a>
+<a class="sourceLine" id="cb217-19" data-line-number="19"><span class="co">#&gt;     })</span></a>
+<a class="sourceLine" id="cb217-20" data-line-number="20"><span class="co">#&gt; }</span></a>
+<a class="sourceLine" id="cb217-21" data-line-number="21"><span class="co">#&gt; &lt;bytecode: 0x43f9c20&gt;</span></a>
+<a class="sourceLine" id="cb217-22" data-line-number="22"><span class="co">#&gt; &lt;environment: namespace:purrr&gt;</span></a></code></pre></div>
+<p>Take a look at the textbook or the documentation of <code>safely()</code> to see how you can take advantage of this behaviour, for example when fitting many models.</p></li>
+</ol>
+</div>
+<div id="case-study-creating-your-own-function-operators" class="section level2">
+<h2><span class="header-section-number">11.2</span> Case study: Creating your own function operators</h2>
+<ol style="list-style-type: decimal">
+<li><p><strong><span class="Q">Q</span></strong>: Weigh the pros and cons of <code>download.file %&gt;% dot_every(10) %&gt;% delay_by(0.1)</code> vs <code>download.file %&gt;% delay_by(0.1) %&gt;% dot_every(10)</code>.</p>
+<p><strong><span class="solved">A</span></strong>: Both commands will print a dot every 10 downloads and will take the same amout of time to run, so the differences may seem quite subtle.</p>
+<p>In the first case, first the dot functionality is added to <code>download.file</code>. Then the delay is added to this already tweaked function. This implies, that the printing of the dot will also be delayed and the first dot will be printed as soon as the download for the 10th url starts.</p></li>
+</ol>
+<p>In the latter case. The delay is added first and the dot-functionality is wrapped around it. This order will print the first dot immediately after the 9th download is finished, the the short delay occurs before the 10th download actually starts.</p>
+<ol start="2" style="list-style-type: decimal">
+<li><p><strong><span class="Q">Q</span></strong>: Should you memoise <code>file.download()</code>? Why/why not?</p>
+<p><strong><span class="solved">A</span></strong>: Memoising <code>file.download()</code> will only work if the files are immutable; i.e. if the file at a given url is always same. There’s no point memoising unless this is true. Even if this is true, however, memoise has to store the results in memory, and large files will potentially take up a lot of memory.</p>
+<p>This implies that it’s probably not beneficial to memoise <code>file.download()</code> in most cases. The only exception is if you are downloading small files many times, and the file at a given url is guaranteed not to change.</p></li>
+<li><p><strong><span class="Q">Q</span></strong>: Create a function operator that reports whenever a file is created or deleted in the working directory, using <code>dir()</code> and <code>setdiff()</code>. What other global function effects might you want to track?</p>
+<p><strong><span class="solved">A</span></strong>: We first start with a function that simply reports the difference between two vectors of files:</p>
+<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb218-1" data-line-number="1">dir_compare &lt;-<span class="st"> </span><span class="cf">function</span>(old, new) {</a>
+<a class="sourceLine" id="cb218-2" data-line-number="2">  <span class="cf">if</span> (<span class="kw">setequal</span>(old, new)) {</a>
+<a class="sourceLine" id="cb218-3" data-line-number="3">    <span class="kw">return</span>()</a>
+<a class="sourceLine" id="cb218-4" data-line-number="4">  }</a>
+<a class="sourceLine" id="cb218-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb218-6" data-line-number="6">  added &lt;-<span class="st"> </span><span class="kw">setdiff</span>(new, old)</a>
+<a class="sourceLine" id="cb218-7" data-line-number="7">  removed &lt;-<span class="st"> </span><span class="kw">setdiff</span>(old, new)</a>
+<a class="sourceLine" id="cb218-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb218-9" data-line-number="9">  changes &lt;-<span class="st"> </span><span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb218-10" data-line-number="10">    <span class="cf">if</span> (<span class="kw">length</span>(added) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="kw">paste0</span>(<span class="st">&quot; * &#39;&quot;</span>, added, <span class="st">&quot;&#39; was added&quot;</span>),</a>
+<a class="sourceLine" id="cb218-11" data-line-number="11">    <span class="cf">if</span> (<span class="kw">length</span>(removed ) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="kw">paste0</span>(<span class="st">&quot; * &#39;&quot;</span>, removed ,</a>
+<a class="sourceLine" id="cb218-12" data-line-number="12">                                     <span class="st">&quot;&#39; was removed&quot;</span>)</a>
+<a class="sourceLine" id="cb218-13" data-line-number="13">  )</a>
+<a class="sourceLine" id="cb218-14" data-line-number="14">  <span class="kw">message</span>(<span class="kw">paste</span>(changes, <span class="dt">collapse =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>))</a>
+<a class="sourceLine" id="cb218-15" data-line-number="15">}</a>
+<a class="sourceLine" id="cb218-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb218-17" data-line-number="17"><span class="kw">dir_compare</span>(<span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>))</a>
+<a class="sourceLine" id="cb218-18" data-line-number="18"><span class="co">#&gt; NULL</span></a>
+<a class="sourceLine" id="cb218-19" data-line-number="19"><span class="kw">dir_compare</span>(<span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;a&quot;</span>))</a>
+<a class="sourceLine" id="cb218-20" data-line-number="20"><span class="co">#&gt;  * &#39;a&#39; was added</span></a>
+<a class="sourceLine" id="cb218-21" data-line-number="21"><span class="co">#&gt;  * &#39;y&#39; was removed</span></a></code></pre></div>
+<p>Then we wrap it up in a function operator</p>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb219-1" data-line-number="1">track_dir &lt;-<span class="st"> </span><span class="cf">function</span>(f) {</a>
+<a class="sourceLine" id="cb219-2" data-line-number="2">  <span class="kw">force</span>(f)</a>
+<a class="sourceLine" id="cb219-3" data-line-number="3">  <span class="cf">function</span>(...) {</a>
+<a class="sourceLine" id="cb219-4" data-line-number="4">    dir_old &lt;-<span class="st"> </span><span class="kw">dir</span>()</a>
+<a class="sourceLine" id="cb219-5" data-line-number="5">    <span class="kw">on.exit</span>(<span class="kw">dir_compare</span>(dir_old, <span class="kw">dir</span>()), <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb219-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb219-7" data-line-number="7">    <span class="kw">f</span>(...)</a>
+<a class="sourceLine" id="cb219-8" data-line-number="8">  }</a>
+<a class="sourceLine" id="cb219-9" data-line-number="9">}</a></code></pre></div>
+<p>And try it out by creating wrappers around <code>file.create()</code> and <code>file.remove()</code>:</p>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb220-1" data-line-number="1">file_create &lt;-<span class="st"> </span><span class="kw">track_dir</span>(file.create)</a>
+<a class="sourceLine" id="cb220-2" data-line-number="2">file_remove &lt;-<span class="st"> </span><span class="kw">track_dir</span>(file.remove)</a>
+<a class="sourceLine" id="cb220-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb220-4" data-line-number="4"><span class="kw">file_create</span>(<span class="st">&quot;delete_me&quot;</span>)</a>
+<a class="sourceLine" id="cb220-5" data-line-number="5"><span class="co">#&gt;  * &#39;delete_me&#39; was added</span></a>
+<a class="sourceLine" id="cb220-6" data-line-number="6"><span class="co">#&gt; [1] TRUE</span></a>
+<a class="sourceLine" id="cb220-7" data-line-number="7"><span class="kw">file_remove</span>(<span class="st">&quot;delete_me&quot;</span>)</a>
+<a class="sourceLine" id="cb220-8" data-line-number="8"><span class="co">#&gt;  * &#39;delete_me&#39; was removed</span></a>
+<a class="sourceLine" id="cb220-9" data-line-number="9"><span class="co">#&gt; [1] TRUE</span></a></code></pre></div>
+<p>To create a more serious version of <code>track_dir()</code> one might provide optionality to set the <code>full.names</code> and <code>recursive</code> arguments of <code>dir()</code> to <code>TRUE</code>. This would enable to also track the creation/deletion of hidden files and files in folders contained in the working directory.</p>
+<p>Other global effects that might be worth tracking include changes regarding:</p>
+<ul>
+<li>the search path and possibly introduced <code>conflicts()</code></li>
+<li><code>options()</code> and <code>par()</code> which modify global settings</li>
+<li>the path of the working directory</li>
+<li>environment variables</li>
+</ul></li>
+<li><p><strong><span class="Q">Q</span></strong>: Write a function operator that logs a timestamp and message to a file every time a function is run.</p>
+<p><strong><span class="solved">A</span></strong>:</p>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb221-1" data-line-number="1">append_line &lt;-<span class="st"> </span><span class="cf">function</span>(path, ...) { </a>
+<a class="sourceLine" id="cb221-2" data-line-number="2">  <span class="kw">cat</span>(..., <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>, <span class="dt">file =</span> path, <span class="dt">append =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb221-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb221-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb221-5" data-line-number="5">logger &lt;-<span class="st"> </span><span class="cf">function</span>(f, log_path) {</a>
+<a class="sourceLine" id="cb221-6" data-line-number="6">  <span class="kw">force</span>(f)</a>
+<a class="sourceLine" id="cb221-7" data-line-number="7">  <span class="kw">force</span>(log_path)</a>
+<a class="sourceLine" id="cb221-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb221-9" data-line-number="9">  <span class="kw">append_line</span>(log_path, <span class="st">&quot;created at: &quot;</span>, <span class="kw">as.character</span>(<span class="kw">Sys.time</span>()))</a>
+<a class="sourceLine" id="cb221-10" data-line-number="10">  <span class="cf">function</span>(...) {</a>
+<a class="sourceLine" id="cb221-11" data-line-number="11">    <span class="kw">append_line</span>(log_path, <span class="st">&quot;called at: &quot;</span>, <span class="kw">as.character</span>(<span class="kw">Sys.time</span>()))</a>
+<a class="sourceLine" id="cb221-12" data-line-number="12">    <span class="kw">f</span>(...)</a>
+<a class="sourceLine" id="cb221-13" data-line-number="13">  }</a>
+<a class="sourceLine" id="cb221-14" data-line-number="14">}</a></code></pre></div>
+<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb222-1" data-line-number="1">log_path &lt;-<span class="st"> </span><span class="kw">tempfile</span>()</a>
+<a class="sourceLine" id="cb222-2" data-line-number="2">mean2 &lt;-<span class="st"> </span><span class="kw">logger</span>(mean, log_path)</a>
+<a class="sourceLine" id="cb222-3" data-line-number="3"><span class="kw">Sys.sleep</span>(<span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb222-4" data-line-number="4"><span class="kw">mean2</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>) </a>
+<a class="sourceLine" id="cb222-5" data-line-number="5"><span class="co">#&gt; [1] 2.5</span></a>
+<a class="sourceLine" id="cb222-6" data-line-number="6"><span class="kw">Sys.sleep</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb222-7" data-line-number="7"><span class="kw">mean2</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb222-8" data-line-number="8"><span class="co">#&gt; [1] 2.5</span></a>
+<a class="sourceLine" id="cb222-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb222-10" data-line-number="10"><span class="kw">readLines</span>(log_path)</a>
+<a class="sourceLine" id="cb222-11" data-line-number="11"><span class="co">#&gt; [1] &quot;created at: 2020-05-03 18:57:42&quot; &quot;called at: 2020-05-03 18:57:47&quot; </span></a>
+<a class="sourceLine" id="cb222-12" data-line-number="12"><span class="co">#&gt; [3] &quot;called at: 2020-05-03 18:57:48&quot;</span></a></code></pre></div></li>
+<li><p><strong><span class="Q">Q</span></strong>: Modify <code>delay_by()</code> so that instead of delaying by a fixed amount of time, it ensures that a certain amount of time has elapsed since the function was last called. That is, if you called <code>g &lt;- delay_by(1, f); g(); Sys.sleep(2); g()</code> there shouldn’t be an extra delay.</p>
+<p><strong><span class="solved">A</span></strong>: We can achieve this with the help of three little tricks.</p>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb223-1" data-line-number="1">delay_atleast &lt;-<span class="st"> </span><span class="cf">function</span>(amount, f) {</a>
+<a class="sourceLine" id="cb223-2" data-line-number="2">  <span class="kw">force</span>(f)</a>
+<a class="sourceLine" id="cb223-3" data-line-number="3">  <span class="kw">force</span>(amount)</a>
+<a class="sourceLine" id="cb223-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb223-5" data-line-number="5">  <span class="co"># Store the last time the function was run</span></a>
+<a class="sourceLine" id="cb223-6" data-line-number="6">  last_time &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb223-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb223-8" data-line-number="8">  <span class="co"># Return modified &#39;delay-aware&#39; function</span></a>
+<a class="sourceLine" id="cb223-9" data-line-number="9">  <span class="cf">function</span>(...) {</a>
+<a class="sourceLine" id="cb223-10" data-line-number="10">    <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(last_time)) {</a>
+<a class="sourceLine" id="cb223-11" data-line-number="11">      wait &lt;-<span class="st"> </span>(last_time <span class="op">-</span><span class="st"> </span><span class="kw">Sys.time</span>()) <span class="op">+</span><span class="st"> </span>amount</a>
+<a class="sourceLine" id="cb223-12" data-line-number="12">      <span class="cf">if</span> (wait <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb223-13" data-line-number="13">        <span class="kw">Sys.sleep</span>(wait)</a>
+<a class="sourceLine" id="cb223-14" data-line-number="14">      }</a>
+<a class="sourceLine" id="cb223-15" data-line-number="15">    }</a>
+<a class="sourceLine" id="cb223-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb223-17" data-line-number="17">    <span class="co"># Update the time after the function has finished</span></a>
+<a class="sourceLine" id="cb223-18" data-line-number="18">    <span class="kw">on.exit</span>(last_time &lt;&lt;-<span class="st"> </span><span class="kw">Sys.time</span>()) </a>
+<a class="sourceLine" id="cb223-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb223-20" data-line-number="20">    <span class="kw">f</span>(...)</a>
+<a class="sourceLine" id="cb223-21" data-line-number="21">  }</a>
+<a class="sourceLine" id="cb223-22" data-line-number="22">}</a></code></pre></div></li>
+</ol>
+
+</div>
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="function-factories.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="base-types.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/Tazinho/Advanced-R-Solutions/edit/main/11_Function_operators.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
