@@ -1,0 +1,156 @@
+--- 
+title: "附录"
+# subtitle: "Lecture title"
+author:
+- affiliation: Dongbei University of Finance & Economics
+  name: Studennt. Li Junjie
+date: '`r Sys.Date()`'
+output:
+  bookdown::html_document2:
+    # code_folding: hide
+    highlight: pygments
+    # highlight: zenburn
+    # highlight: haddock
+    theme: darkly
+    # theme: flatly
+    df_print: paged	
+    number_sections: true
+    keep_md: no
+    keep_tex: no
+    toc: yes
+    toc_depth: 5
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+    # css: styles.css
+# bibliography: [book.bib, packages.bib]
+# biblio-style: apalike
+link-citations: yes
+sansfont: Times New Roman
+always_allow_html: yes
+urlcolor: "red"
+description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+abstract: |
+    本章介绍 R 语言编程与数据可视化基础，对比了 base、 lattice 和 ggplot2 包的图形语法，重点介绍了 ggplot2 包的图形语法介绍 R 语言编程与数据可视化基础，对比了 base、 lattice 和 ggplot2 包的图形语法，重点介绍了 ggplot2 包的图形语法
+    
+    源代码下载 Github 网址： <https://github.com/EasyChart/Beautiful-Visualization-with-R>
+---
+
+# 加载经常用的R包
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      cache = FALSE,
+                      fig.show = "hold",
+                      fig.align = "center",
+                      tidy = FALSE)
+                      # class.source = "bg-warning")
+```
+
+```{r,echo=FALSE}
+library(bubblyr)
+bubblyr::bubbly(theme = "sweet")
+# bubblyr::bubbly(theme = "rladies")
+```
+
+```{js, echo=FALSE}
+$('.title').css('color', 'red')
+$('.title').css('font-family', 'Times New Roman')
+```
+
+```{css, echo=FALSE}
+* {
+    # font-size: 17px !important;
+    font-family: "Times New Roman" !important;
+    # color: rgb(199 237	204)
+}
+
+code {
+    font-size: 18px !important;
+    font-family: "Times New Roman" !important;
+    # color: rgb(199 237	204)
+}
+::selection {
+   # background: rgb(135 206 255);
+}
+```
+
+# The shell
+
+## What is the shell?
+
+## Starting the shell
+
+## Windows is special … and not in a good way
+
+## Basic shell commands
+
+- `pwd` (print working directory). Shows directory or “folder” you are currently operating in. This is not necessarily the same as the R working directory you get from getwd().
+- `ls` (list files). Shows the files in the current working directory. This is equivalent to looking at the files in your `Finder/Explorer/File Manager`. Use ls `-a` to also list hidden files, such as .Rhistory and .git.
+- `cd` (change directory). Allows you to navigate through your directories by changing the shell’s working directory. You can navigate like so:
+  - go to subdirectory foo of current working directory: `cd foo`
+  - go to parent of current working directory: `cd ..`
+  - go to your “home” directory: `cd ~` or simply `cd`
+    - `Pro tip 1`: Dragging and dropping a file or folder into the terminal window will paste the absolute path into the window.
+    - `Pro tip 2`: Use the tab key to auto complete unambiguous directory and file names. Hit tab twice to see all ambiguous options.
+- Use `arrow-up` and `arrow-down` to repeat previous commands. Or search for previous commands with CTRL + r.
+
+A few Git commands:
+
+- `git status` is the most used git command and informs you of your current branch, any changes or untracked files, and whether you are in sync with your remotes.
+- `git remote -v` lists all remotes. Very useful for making sure git knows about your remote and that the remote address is correct.
+- `git remote add origin GITHUB_URL` adds the remote GITHUB_URL with nickname origin.
+- `git remote set-url origin GITHUB_URL` changes the remote url of origin to GITHUB_URL. This way you can fix typos in the remote url.
+- Feel free to suggest other commands that deserve listing in a GitHub issue.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

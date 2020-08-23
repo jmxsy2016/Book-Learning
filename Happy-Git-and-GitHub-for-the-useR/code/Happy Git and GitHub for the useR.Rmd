@@ -1,0 +1,369 @@
+--- 
+title: "Happy Git and GitHub for the useR"
+# subtitle: "Lecture title"
+author:
+- affiliation: Dongbei University of Finance & Economics
+  name: Studennt. LI Junjie
+date: '`r Sys.Date()`'
+output:
+  rmdformats::material:
+    df_print: paged	
+    number_sections: true
+    theme: paper
+    highlight: kate
+    use_bookdown: true
+    # css: styles.css
+# bibliography: [book.bib, packages.bib]
+# biblio-style: apalike
+link-citations: yes
+sansfont: Times New Roman
+always_allow_html: yes
+urlcolor: "red"
+description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+editor_options: 
+  chunk_output_type: console
+---
+
+# Why Git? Why GitHub?
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.show = "hold",
+                      fig.align = "center",
+                      tidy = FALSE)
+```
+
+```{js, echo=FALSE}
+$('.title').css('color', 'red')
+$('.title').css('font-family', 'Times New Roman')
+```
+
+```{css, echo=FALSE}
+code {
+font-size: 18px !important;
+    font-family: "Times New Roman" !important;
+    # color: rgb(199 237	204)
+}
+* {
+    # font-size: 20px !important;
+    font-family: "Times New Roman" !important;
+    # color: rgb(199 237	204)
+}
+::selection {
+   # background: rgb(135 206 255);
+}
+```
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+library(pacman)
+# 读数据
+p_load(readxl,writexl,data.table,openxlsx,haven,rvest)
+```
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+# 数据探索
+p_load(tidyverse,DT,skimr,DataExplorer,explore,vtable,stringr,kableExtra,lubridate)
+```
+
+```{r,eval=FALSE,warning=FALSE,message=FALSE,echo=FALSE}
+# 模型
+p_load(grf,glmnet,caret,tidytext,fpp2,forecast,car,tseries,hdm,tidymodels,broom)
+```
+
+```{r,eval=FALSE,warning=FALSE,message=FALSE,echo=FALSE}
+# 可视化
+p_load(patchwork,ggrepel,ggcorrplot,gghighlight,ggthemes,shiny)
+```
+
+```{r,eval=TRUE,warning=FALSE,message=FALSE,echo=FALSE}
+# 其它常用包
+p_load(magrittr,listviewer,devtools,here,janitor,reticulate,jsonlite)
+```
+
+## Why Git?
+
+## Why GitHub?
+
+## Is it going to hurt?
+
+## What is the payoff?
+
+## Who can do what?
+
+## Special features of GitHub
+
+## What’s special about using R with Git and GitHub?
+
+## Audience and pre-reqs
+
+## What this is NOT
+
+# Contributors
+
+# Workshops
+
+## Pre-workshop set-up
+
+## rstudio::conf 2020
+
+## Previous workshops
+
+# Register a GitHub account
+
+## Username advice
+
+## Free private repos
+
+## Pay for private repos
+
+# Install or upgrade R and RStudio
+
+```{r}
+R.version
+R.version.string
+```
+
+## How to think about upgrading R and RStudio
+
+# Install Git
+
+## Install Git
+
+下载网址：<https://git-scm.com/download/>
+
+## Git already installed?
+
+```{Bash}
+which git
+```
+
+```{Bash}
+git --version
+```
+
+If you are successful, that’s great! You have Git already. **No need to install!** Move on.
+
+## Windows
+
+- **NOTE:** When asked about “Adjusting your PATH environment”, make sure to select “Git from the command line and also from 3rd-party software”. Otherwise, we believe it is good to accept the defaults.
+- Note that RStudio for Windows prefers for Git to be installed below **C:/Program Files** and this appears to be the default. This implies, for example, that the Git executable on my Windows system is found at **C:/Program Files/Git/bin/git.exe**. Unless you have specific reasons to otherwise, follow this convention.
+
+## macOS
+
+```{Bash}
+git --version
+```
+
+```{Bash}
+git config
+```
+
+## Linux
+
+# Introduce yourself to Git
+
+```{r}
+# git config --global user.name 'Jane Doe'
+# git config --global user.email 'jane@example.com'
+# git config --global --list
+```
+
+```{bash,eval = FALSE}
+git config --global --list
+```
+
+The `usethis` package offers an alternative approach. You can set your Git user name and email from within R:
+
+```{r,eval=FALSE}
+library(usethis)
+use_git_config(user.name = "Jane Doe", user.email = "jane@example.org")
+```
+
+## More about git config
+
+### Configure the Git editor
+
+# Install a Git client
+
+## What is a Git client? Why would you want one?
+
+## A picture is worth a thousand words
+
+## No one is giving out Git Nerd merit badges
+
+## Recommended Git clients
+
+# Can you hear me now?{-}
+
+The next few chapters walk through some basic operations to confirm you have installed the necessary software and that the necessary connections are being made, between tools on your computer and between your computer and GitHub.
+
+# Connect to GitHub
+
+## Make a repo on GitHub
+
+Go to https://github.com and make sure you are logged in.
+
+## Clone the repo to your local computer
+
+Make this new repo your working directory, list its files, display the README, and get some information on its connection to GitHub:
+
+```{r,eval=FALSE}
+cd myrepo
+ls
+head README.md
+git remote show origin
+```
+
+## Make a **local change**, **commit**, and **push**
+
+```{bash}
+git status
+```
+
+```{r,eval=FALSE}
+git add -A
+git commit -m "A commit from my local computer"
+git push
+```
+
+This should look something like this:
+
+```{r,eval=FALSE}
+jenny@2015-mbp myrepo $ git add -A
+
+jenny@2015-mbp myrepo $ git commit -m "A commit from my local computer"
+[master de669ba] A commit from my local computer
+ 1 file changed, 1 insertion(+)
+ 
+jenny@2015-mbp myrepo $ git push
+Counting objects: 3, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 311 bytes | 0 bytes/s, done.
+Total 3 (delta 0), reused 0 (delta 0)
+To https://github.com/jennybc/myrepo.git
+   b4112c5..de669ba  master -> master
+```
+
+```{bash}
+git config --show-origin --get core.autocrlf
+```
+
+If your value shows as false, you can set it to true with this command:
+
+```{r,eval=FALSE}
+$ git config --global core.autocrlf true
+```
+
+## Confirm the local change propagated to the GitHub remote
+
+## Am I really going to type GitHub **username** and **password** on each push?
+
+It is likely that your first push, above, leads to a challenge for your GitHub **username** and **password.** This will drive you crazy in the long-run and make you reluctant to push. You want to eliminate this annoyance.
+
+Luckily, if you’ve installed Git one of the ways recommended by Happy Git, it is likely that Git is already using **a credential helper** provided by your operating system! If so, your GitHub credentials were cached when you successfully pushed above. This setup applies across repos, i.e. it’s not limited to our current test repo.
+
+I suggest you make another local change to **README.md**, **stage** (i.e. “add”) it, **commit** it, and **push**, using the commands shown above. If this “just works” and shows up on GitHub, rejoice. You are ready to work with GitHub via HTTPS without constantly re-entering your credentials. You are ready to delete this toy repo.
+
+If you are challenged for your **username** and **password** again, do one of the following:
+
+- Cache credentials for HTTPS access, **chapter 10**.
+- Set up SSH keys, **chapter 11**.
+
+Now is the perfect time to do this, since you have a functioning test repo.
+
+## Clean up
+
+GitHub In the browser, go to your repo’s landing page on GitHub. Click on `“Settings”`.
+
+Scroll down, click on `“delete repository,”` and do as it asks.
+
+# Cache credentials for HTTPS
+
+## You might not need to do anything!
+
+```{r}
+# git config --show-origin --get credential.helper
+```
+
+```{bash}
+git config --show-origin --get credential.helper
+```
+
+## Special consideration re: two-factor authentication
+
+[Creating a personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+
+If you really want to use HTTPS, you must enter a `personal access token` in lieu of your password. This is the same type of PAT you could use to access the GitHub API and that many R users define in `.Renviron` as the environment variable GITHUB_PAT.
+
+```{bash}
+git branch -vv
+```
+
+Here we confirm that the `local master branch` is tracking your GitHub master branch (origin/master). Gibberish? Just check that your output looks similar to mine:
+
+## Verify that your Git is new enough to have a credential helper
+
+```{Bash}
+git -- version
+```
+
+## Turn on the credential helper
+
+### Windows
+
+The preferred setting for `credential.helper` is now manager, which configures Git to use Git Credential Manager for Windows, which ships with Git for Windows. This may already be configured, but this command sets it explicitly:
+
+```{r}
+# git config --global credential.helper manager
+```
+
+If for some reason, Git Credential Manager does not work, you may have success with an older method, wincred:
+
+```{r}
+# git config --global credential.helper wincred
+```
+
+### [Mac](https://happygitwithr.com/credential-caching.html)
+
+### Linux
+
+```{r}
+# git config --global credential.helper 'cache --timeout=10000000'
+```
+
+## Trigger a username / password challenge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
